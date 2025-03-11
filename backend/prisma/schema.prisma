@@ -12,3 +12,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  userId    String   @id @default(uuid())
+  timestamp DateTime @default(now())
+}
+
+// Edit Later
+model Ingredient {
+  ingredientId          String   @id @default(uuid())
+  ingredientName        String
+  ingredientPicture     String
+  ingredientDateAdded   DateTime @default(now())
+  ingredientDateExpired DateTime
+}
+
+// Edit Later
+model Food {
+  foodId          String   @id @default(uuid())
+  foodName        String
+  foodPicture     String
+  foodDateAdded   DateTime @default(now())
+  foodDateExpired DateTime
+}
+
+// Edit Later
+model SavedRecipe {
+  recipeId          String   @id @default(uuid())
+  recipeName        String 
+}
