@@ -25,7 +25,7 @@ async function main() {
 
   const orderedFileNames = [
     // seedData file names
-    "example.json",
+    "users.json",
   ];
 
   await deleteAllData(orderedFileNames);

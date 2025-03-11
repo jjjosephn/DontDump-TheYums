@@ -21,6 +21,7 @@ app.use(cors())
 
 /* Routes */
 app.use("/example", exampleRoutes)
+app.use("/users", exampleRoutes);
 
 /* Server */
 const port = Number(process.env.PORT) || 3001
