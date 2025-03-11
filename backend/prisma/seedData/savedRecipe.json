@@ -1,0 +1,10 @@
+[
+   {
+     "recipeId": "rec1",
+     "recipeName": "Spaghetti Bolognese"
+   },
+   {
+     "recipeId": "rec2",
+     "recipeName": "Avocado Toast"
+   }
+ ]
