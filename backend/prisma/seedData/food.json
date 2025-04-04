@@ -1,0 +1,16 @@
+[
+   {
+      "foodId": "food1",
+      "foodName": "Pasta",
+      "foodPicture": "pasta.jpg",
+      "foodDateAdded": "2024-03-08T09:00:00Z",
+      "foodDateExpired": "2024-03-18T09:00:00Z"
+   },
+   {
+      "foodId": "food2",
+      "foodName": "Chicken Soup",
+      "foodPicture": "chicken_soup.jpg",
+      "foodDateAdded": "2024-03-06T11:30:00Z",
+      "foodDateExpired": "2024-03-16T11:30:00Z"
+   }
+]

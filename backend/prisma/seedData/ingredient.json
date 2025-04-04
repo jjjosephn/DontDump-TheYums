@@ -1,0 +1,16 @@
+[
+   {
+      "ingredientId": "ing1",
+      "ingredientName": "Carrot",
+      "ingredientPicture": "carrot.jpg",
+      "ingredientDateAdded": "2024-03-05T10:15:30Z",
+      "ingredientDateExpired": "2024-03-20T10:15:30Z"
+   },
+   {
+      "ingredientId": "ing2",
+      "ingredientName": "Milk",
+      "ingredientPicture": "milk.jpg",
+      "ingredientDateAdded": "2024-03-07T14:20:00Z",
+      "ingredientDateExpired": "2024-03-14T14:20:00Z"
+   }
+]
