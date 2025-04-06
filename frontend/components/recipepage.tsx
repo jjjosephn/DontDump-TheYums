@@ -13,6 +13,9 @@ import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+import {Label } from "@/components/ui/label" //
 
 import { Search, Bookmark } from "lucide-react"
 
@@ -29,8 +32,13 @@ interface Recipe {
     ingredients: string[]
     imageUrl?: string
 }
+
+type SearchMode = "title" | "ingredients"
+
+
 export default function RecipePage() {
     const [activeTab, setActiveTab] = useState("search")
+    const [searchMode, setSearchMode] = useState<SearchMode>("title")
 
 return (
     <div className="space-y-4">
@@ -47,11 +55,35 @@ return (
                     </Bookmark>
                 </TabsTrigger>
             </TabsList>
-        </Tabs>
+            <TabsContent value="search" className="space-y-4">
+                {}
+                <div className="bg-muted/30 p-4 rounded-lg">
+                    <RadioGroup
+                        value={searchMode}
+                        onValueChange={(value) => 
+                            setSearchMode(value as SearchMode)
+                        }
+                        className="flex flex-col sm:flex-row gap-4"
+                    >
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="title" id="search-title"/>
+                            <Label htmlFor="search-title"
+                            className="font-medium">
+                                Search by Recipe Title
+                            </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="ingredients" id="search-ingredients"/>
+                            <Label htmlFor="search-ingredients"
+                            className="font-medium">
+                                Search by Ingredients
+                            </Label>
+                        </div>
+                    </RadioGroup>
 
-        <TabsContent value="search" className="space-y-4">
-            
-        </TabsContent>
+                </div>
+            </TabsContent>
+        </Tabs>
 
     </div>
 )
