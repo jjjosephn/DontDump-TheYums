@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Filter } from "lucide-react"; // Icon for the filter button
-import RecipePage from "@/components/recipepage"
+import RecipePage from "@/components/RecipePage"
 
 // need to import mutator from api.ts
 
