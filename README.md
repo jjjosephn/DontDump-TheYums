@@ -22,8 +22,8 @@ This is an example of how to setup the project locally.
 > ```
 > npm install npm@latest -g
 > ```
-* PostgresSQL
-* PGAdmin 
+* PostgresSQL (For MacOS install using Homebrew)
+* PGAdmin
 
 ## Installation:
 1. Clone the repository
