@@ -40,15 +40,15 @@ This is an example of how to setup the project locally.
 > cd backend
 > npm install
 > ```
-4. Create a .env and .env.local file
-In the .env file in backend folder
+4. Create a .env and .env.local file  
+   In the .env file in backend folder
 > ```
 > DATABASE_URL="postgresql://${pg_name}:${password}@localhost:5432/${db_name}?schema=public"
 > PORT=8000
 > ```
-pg_name is the name of your Postgres user set when installing
-password is the password to the user set when instaling
-db_name is the name of the database of set when creating a new server conneciton in PGAdmin
+pg_name is the name of your Postgres user set when installing  
+password is the password to the user set when instaling  
+db_name is the name of the database of set when creating a new server conneciton in PGAdmin  
 
 In the .env.local file in frontend folder
 > ```
