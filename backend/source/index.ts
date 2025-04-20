@@ -7,6 +7,7 @@ import morgan from 'morgan'
 
 /* Route Imports */
 import exampleRoutes from './routes/exampleRoutes'
+import recipeRoutes from './routes/recipeRoutes'
 
 /* Configs */
 dotenv.config()
@@ -20,7 +21,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 
 /* Routes */
-app.use("/example", exampleRoutes)
+app.use('/example', exampleRoutes); // Handles /example
+app.use('/api/recipes', recipeRoutes);  // Handles /recipes
 
 /* Server */
 const port = Number(process.env.PORT) || 3001
