@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label" //
 // custom ui components
 import IngredientFilter from "@/components/IngredientFilter"
 import RecipeResults from "@/components/RecipeResults"
-
+import BookmarkedRecipes from "./BookmarkedRecipes"
 
 // icons
 import { Search, Bookmark } from "lucide-react"
@@ -245,6 +245,10 @@ return (
                         /> 
                     </div>
                 </div>
+            </TabsContent>
+            
+            <TabsContent value="bookmarks">
+                <BookmarkedRecipes recipes={bookmarkedRecipes} onRemoveBookmark={handleRemoveBookmark} />
             </TabsContent>
         </Tabs>
     </div>
