@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import {Label } from "@/components/ui/label" //
+import { Label } from "@/components/ui/label" //
 
 // custom ui components
 import IngredientFilter from "@/components/IngredientFilter"
@@ -25,6 +25,7 @@ import IngredientFilter from "@/components/IngredientFilter"
 // icons
 import { Search, Bookmark } from "lucide-react"
 
+import { useSearchRecipesMutation } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
@@ -41,10 +42,6 @@ interface Recipe {
 }
 
 type SearchMode = "title" | "ingredients"
-
-function handleSearch() {
-
-}
 
 export default function RecipePage() {
     const [activeTab, setActiveTab] = useState("search")
@@ -78,6 +75,12 @@ export default function RecipePage() {
       },
     ])
     const [selectedIngredients, setselectedIngredients] = useState<string[]>([])
+    const [ searchRecipe ] = useSearchRecipesMutation();
+
+    const handleSearch = async () => {
+        const res = await searchRecipe({ ingredients: selectedIngredients, number: 2 });
+        console.log(res)
+    };
 
 return (
     <div className="space-y-4">
