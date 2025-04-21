@@ -20,11 +20,14 @@ import { Label } from "@/components/ui/label" //
 
 // custom ui components
 import IngredientFilter from "@/components/IngredientFilter"
+import RecipeResults from "@/components/RecipeResults"
 
 
 // icons
 import { Search, Bookmark } from "lucide-react"
+import { ChefHat } from "lucide-react"
 
+// hooks for calling api
 import { useSearchRecipesMutation } from "../app/state/api"
 
 // typing (review later)
@@ -41,12 +44,26 @@ interface Recipe {
     imageUrl?: string
 }
 
+interface Recipe {
+    id: string
+    title: string
+    ingredients: string[]
+    imageUrl?: string
+}
+
 type SearchMode = "title" | "ingredients"
 
 export default function RecipePage() {
     const [activeTab, setActiveTab] = useState("search")
     const [searchMode, setSearchMode] = useState<SearchMode>("title")
-    const [query, setQuery] = useState("")
+    const [query, setQuery] = useState("") // for search by title
+
+    // results, handleBookmarkRecipe bookmarkedRecipes
+    const [bookmarkedRecipes, setBookmarkedRecipes] = useState<Recipe[]>([])
+    const [results, setResults] = useState<Recipe[]>([])
+    const [searchResults, setSearchResults] = useState<Recipe[]>([])
+    const [bookmarked, setBookmarked] = useState(false)
+    
     const [inventory, setInventory] = useState<Ingredient[]>([
         {
         name: "Sugar",
@@ -78,9 +95,51 @@ export default function RecipePage() {
     const [ searchRecipe ] = useSearchRecipesMutation();
 
     const handleSearch = async () => {
-        const res = await searchRecipe({ ingredients: selectedIngredients, number: 2 });
-        console.log(res)
-    };
+        if (selectedIngredients.length === 0) {
+          setResults([]);
+          return;
+        }
+      
+        try {
+          const res = await searchRecipe({ ingredients: selectedIngredients, number: 10 });
+          
+          if (res.data) {
+            const transformedRecipes = res.data.map(recipe => ({
+              id: recipe.id.toString(),
+              title: recipe.title,
+              imageUrl: recipe.image,
+              ingredients: [
+                ...recipe.usedIngredients.map(ing => ing.name),
+                ...recipe.missedIngredients.map(ing => ing.name)
+              ],
+              usedIngredientCount: recipe.usedIngredientCount,
+              missedIngredientCount: recipe.missedIngredientCount,
+
+              apiData: recipe
+            }));
+            
+            setResults(transformedRecipes);
+          } else {
+            setResults([]);
+            console.error("Error fetching recipes: No data returned");
+          }
+        } catch (error) {
+          setResults([]);
+          console.error("Error fetching recipes:", error);
+        }
+      };
+
+    const handleBookmarkRecipe = (recipe: Recipe) => {
+        if (!bookmarkedRecipes.some((r) => r.id === recipe.id)) {
+          const updatedBookmarks = [...bookmarkedRecipes, recipe]
+          setBookmarkedRecipes(updatedBookmarks)
+        }
+    }
+    
+    const handleRemoveBookmark = (recipeId: string) => {
+        const updatedBookmarks = bookmarkedRecipes.filter((recipe) => recipe.id !== recipeId)
+        setBookmarkedRecipes(updatedBookmarks)
+    }
 
 return (
     <div className="space-y-4">
@@ -152,10 +211,42 @@ return (
                             </div>
                         )}
                     </div>
+                    <div className="mt-4">
+                        {searchMode === "title" ? (
+                        <div className="flex items-center gap-2 mb-2">
+                            <ChefHat className="h-5 w-5 text-muted-foreground" />
+                            <h2 className="text-lg font-medium">Recipes matching "{query}"</h2>
+                        </div>
+                        ) : (
+                        <div className="flex items-center gap-2 mb-2">
+                            <ChefHat className="h-5 w-5 text-muted-foreground" />
+                            <h2 className="text-lg font-medium">
+                            Recipes with{" "}
+                            {selectedIngredients.length > 0 ? (
+                                <>
+                                {selectedIngredients.map((ing, i) => (
+                                    <span key={ing}>
+                                    {i > 0 && i === selectedIngredients.length - 1 ? " and " : i > 0 ? ", " : ""}
+                                    <span className="font-semibold">{ing}</span>
+                                    </span>
+                                ))}
+                                </>
+                            ) : (
+                                "selected ingredients"
+                            )}
+                            </h2>
+                        </div>
+                        )}
+                        <RecipeResults
+                        recipes={results}
+                        onBookmark={handleBookmarkRecipe}
+                        bookmarkedRecipes={bookmarkedRecipes}
+                        searchMode={searchMode}
+                        /> 
+                    </div>
                 </div>
             </TabsContent>
         </Tabs>
-
     </div>
 )
 }
