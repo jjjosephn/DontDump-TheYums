@@ -12,7 +12,14 @@ export const api = createApi({
           params: { ingredients, number }, // params
         }),
       }),
-    }),
+      addIngredient: build.mutation({
+         query: (ingredient) => ({
+           url: '/api/ingredients', // backend endpoint for adding ingredients
+           method: 'POST',
+           body: ingredient, // send the ingredient object in the request body
+         }),
+       }),
+    }),   
 });
 
-export const { useSearchRecipesMutation } = api;
+export const { useSearchRecipesMutation, useAddIngredientMutation } = api;

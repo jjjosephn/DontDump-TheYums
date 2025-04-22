@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+import AddIngredientForm from "@/components/AddIngredientForm"
+
 // Mock data based on the schema
 const mockIngredients = [
   {
@@ -64,6 +66,16 @@ const mockIngredients = [
 export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("all") // all, valid, expired
+  const [isFormVisible, setIsFormVisible] = useState(false) // State to control the visibility of the form
+
+  // For handling showing the addNewIngredient form
+  const handleAddIngredientClick = () => {
+    setIsFormVisible(true); // Show the form when the button is clicked
+  };
+
+  const handleCloseForm = () => {
+    setIsFormVisible(false); // Hide the form when the form is closed
+  };
 
   // Function to determine if an ingredient is expired
   const isExpired = (expiryDate) => {
@@ -107,7 +119,7 @@ export default function InventoryPage() {
               <p className="text-slate-500">Manage your ingredients efficiently</p>
             </div>
           </div>
-          <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={ handleAddIngredientClick }>
             <PlusCircle className="h-4 w-4" /> Add New Ingredient
           </Button>
         </div>
@@ -184,6 +196,20 @@ export default function InventoryPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Add Ingredient Form */}
+        {isFormVisible && (
+          <div className="absolute inset-0 flex items-center justify-center z-50">
+            <div
+              className="absolute inset-0 bg-transparent"
+              onClick={handleCloseForm} // Close the form if the user clicks outside
+            ></div>
+
+            <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10">
+              <AddIngredientForm onClose={handleCloseForm} /> {/* Pass a close handler */}
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <Card className="border-none shadow-sm overflow-hidden">
