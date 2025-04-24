@@ -28,6 +28,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
     const [ingredientName, setIngredientName] = useState("")
     const [ingredientPicture, setIngredientPicture] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
     const [expiryDate, setExpiryDate] = useState<Date>(new Date())
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
@@ -37,9 +38,22 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
       return date.toISOString().split("T")[0]
     }
 
-    const shouldFetch = searchTerm.length >= 2
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm)
+      }, 500)
 
-    const { data, isLoading, isFetching } = useFetchIngredientsQuery(searchTerm, {
+      return () => clearTimeout(timer)
+    }, [searchTerm])
+
+    // Update ingredientName when searchTerm changes
+    useEffect(() => {
+      setIngredientName(searchTerm)
+    }, [searchTerm])
+
+    const shouldFetch = debouncedSearchTerm.length >= 2
+
+    const { data, isLoading, isFetching } = useFetchIngredientsQuery(debouncedSearchTerm, {
       skip: !shouldFetch,
     })
 
@@ -64,18 +78,14 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
       setShowDropdown(shouldFetch && searchResults.length > 0)
     }, [searchResults, shouldFetch])
 
-    useEffect(() => {
-      const timer = setTimeout(() => {}, 500)
-      return () => clearTimeout(timer)
-    }, [searchTerm])
-
     const handleSelectIngredient = (ingredient: any) => {
+      console.log(ingredient)
       setIngredientName(ingredient.name)
       setSearchTerm(ingredient.name)
       if (ingredient.image) {
         setIngredientPicture(`https://img.spoonacular.com/ingredients_250x250/${ingredient.image}`)
       } else {
-        setIngredientPicture("/placeholder.svg?height=200&width=200")
+        setIngredientPicture("/FoodImageNotFound.png")
       }
       setShowDropdown(false)
     }
@@ -91,7 +101,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
 
       const newIngredient = {
         ingredientName,
-        ingredientPicture: ingredientPicture || "/placeholder.svg?height=200&width=200",
+        ingredientPicture: ingredientPicture || "/FoodImageNotFound.png?height=200&width=200",
         ingredientDateAdded: new Date(),
         ingredientDateExpired: expiryDate,
       }
@@ -101,6 +111,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
       setIngredientName("")
       setIngredientPicture("")
       setSearchTerm("")
+      setDebouncedSearchTerm("")
       setExpiryDate(new Date())
       setIsSubmitting(false)
     }
@@ -111,7 +122,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
           <Label htmlFor="name">Ingredient Name</Label>
           <Input
             id="name"
-            placeholder="Search for ingredient"
+            placeholder="Search for ingredient or type custom name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => searchTerm && searchResults.length > 0 && setShowDropdown(true)}

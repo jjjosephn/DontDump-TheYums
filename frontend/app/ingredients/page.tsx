@@ -31,12 +31,6 @@ interface NewIngredient {
   ingredientDateExpired: Date;
 }
 
-interface FormattedIngredient {
-  name: string;
-  image: string | null;
-  expiryDate: string;
-}
-
 export default function IngredientInventory() {
   const { data: ingredients = [], isLoading, refetch } = useGetAllIngredientsQuery({})
   const [searchQuery, setSearchQuery] = useState("")
@@ -90,7 +84,6 @@ export default function IngredientInventory() {
     } catch (error) {
       console.error("Failed to add ingredient:", error)
     }
-    setIsDialogOpen(false)
   }, [add, refetch])
 
   const handleDeleteIngredient = useCallback(async (id: string) => {
@@ -249,7 +242,7 @@ export default function IngredientInventory() {
                       <CardContent className="p-3 pt-0 pb-2 relative">
                         <div className="aspect-square relative overflow-hidden rounded-md bg-slate-100">
                           <Image
-                            src={ingredient.ingredientPicture || "/placeholder.svg"}
+                            src={ingredient.ingredientPicture || "/FoodImageNotFound.png"}
                             alt={ingredient.ingredientName}
                             fill
                             sizes="(max-width: 768px) 100vw, 200px"
