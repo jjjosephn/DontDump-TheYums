@@ -56,3 +56,22 @@ export const getAllIngredients = async (
       res.status(500).json({ error: 'Failed to fetch all ingredients' });
    }
 }
+
+export const deleteIngredient = async (
+   req: Request,
+   res: Response
+): Promise<void> => {
+   const { id } = req.params
+
+   try {
+      const deletedIngredient = await prisma.ingredient.delete({
+         where: { 
+            ingredientId: id
+         },
+      })
+      res.status(200).json(deletedIngredient)
+   } catch (error) {
+      console.error('Error deleting ingredient:', error);
+      res.status(500).json({ error: 'Failed to delete ingredient' });
+   }
+}

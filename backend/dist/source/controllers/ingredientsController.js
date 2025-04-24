@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllIngredients = exports.addIngredient = exports.fetchIngredients = void 0;
+exports.deleteIngredient = exports.getAllIngredients = exports.addIngredient = exports.fetchIngredients = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const fetchIngredients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -55,3 +55,19 @@ const getAllIngredients = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllIngredients = getAllIngredients;
+const deleteIngredient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const deletedIngredient = yield prisma.ingredient.delete({
+            where: {
+                ingredientId: id
+            },
+        });
+        res.status(200).json(deletedIngredient);
+    }
+    catch (error) {
+        console.error('Error deleting ingredient:', error);
+        res.status(500).json({ error: 'Failed to delete ingredient' });
+    }
+});
+exports.deleteIngredient = deleteIngredient;

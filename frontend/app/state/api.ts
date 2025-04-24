@@ -35,6 +35,12 @@ export const api = createApi({
           method: 'GET',
         }),
       }),
+      deleteIngredient: build.mutation({
+        query: (id) => ({
+          url: `/ingredients/delete/${id}`,
+          method: 'DELETE',
+        }),
+      }),
     }),
 });
 
@@ -43,4 +49,5 @@ export const {
   useFetchIngredientsQuery,
   useAddIngredientMutation,
   useGetAllIngredientsQuery,
+  useDeleteIngredientMutation,
 } = api;
