@@ -61,8 +61,6 @@ export default function RecipePage() {
     // results, handleBookmarkRecipe bookmarkedRecipes
     const [bookmarkedRecipes, setBookmarkedRecipes] = useState<Recipe[]>([])
     const [results, setResults] = useState<Recipe[]>([])
-    const [searchResults, setSearchResults] = useState<Recipe[]>([])
-    const [bookmarked, setBookmarked] = useState(false)
     
     const [inventory, setInventory] = useState<Ingredient[]>([
         {
@@ -71,24 +69,9 @@ export default function RecipePage() {
         expirationDate: new Date(2024, 12, 31),
       },
       {
-        name: "Butter",
-        imageUrl: "/placeholder.svg",
-        expirationDate: new Date(2024, 6, 10),
-      },
-      {
         name: "Chicken",
         imageUrl: "/placeholder.svg",
         expirationDate: new Date(2024, 4, 5),
-      },
-      {
-        name: "Rice",
-        imageUrl: "/placeholder.svg",
-        expirationDate: new Date(2025, 1, 15),
-      },
-      {
-        name: "Tomatoes",
-        imageUrl: "/placeholder.svg",
-        expirationDate: new Date(2024, 4, 10),
       },
     ])
     const [selectedIngredients, setselectedIngredients] = useState<string[]>([])
@@ -140,6 +123,11 @@ export default function RecipePage() {
         const updatedBookmarks = bookmarkedRecipes.filter((recipe) => recipe.id !== recipeId)
         setBookmarkedRecipes(updatedBookmarks)
     }
+
+    const handleRecipeClick = (recipe) => {
+        console.log("Recipe clicked:", recipe);
+        // Navigate to a detailed view or perform another action
+      };
 
 return (
     <div className="space-y-4">
@@ -238,10 +226,11 @@ return (
                         </div>
                         )}
                         <RecipeResults
-                        recipes={results}
-                        onBookmark={handleBookmarkRecipe}
-                        bookmarkedRecipes={bookmarkedRecipes}
-                        searchMode={searchMode}
+                        recipes={ results }
+                        onBookmark={ handleBookmarkRecipe }
+                        bookmarkedRecipes={ bookmarkedRecipes }
+                        onRecipeClick={ handleRecipeClick }
+                        searchMode={ searchMode } // show diff text depending on search mod
                         /> 
                     </div>
                 </div>
