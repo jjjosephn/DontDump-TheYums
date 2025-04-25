@@ -66,7 +66,7 @@ export default function Ingredientfilter(
                         >
                           <div className="aspect-square relative mb-2">
                             <Image
-                              src={ingredient.imageUrl || "/placeholder.svg"}
+                              src={ingredient.imageUrl || "/FoodImageNotFound.png"}
                               alt={ingredient.name}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

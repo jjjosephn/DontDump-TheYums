@@ -5,6 +5,7 @@ export const api = createApi({
    reducerPath: 'api',
    tagTypes: [],
    endpoints: (build) => ({
+      // Recipes
       searchRecipes: build.mutation({
         query: ({ ingredients, number }) => ({
           url: '/api/recipes', // backend endpoint
@@ -12,7 +13,41 @@ export const api = createApi({
           params: { ingredients, number }, // params
         }),
       }),
+
+      // Ingredients
+      fetchIngredients: build.query({
+        query: (query) => ({
+          url: '/ingredients/info', 
+          method: 'GET',
+          params: { query }, 
+        }),
+      }),
+      addIngredient: build.mutation({
+        query: (ingredient) => ({
+          url: '/ingredients/add',
+          method: 'POST',
+          body: ingredient,
+        })
+      }),
+      getAllIngredients: build.query({
+        query: () => ({
+          url: '/ingredients',
+          method: 'GET',
+        }),
+      }),
+      deleteIngredient: build.mutation({
+        query: (id) => ({
+          url: `/ingredients/delete/${id}`,
+          method: 'DELETE',
+        }),
+      }),
     }),
 });
 
-export const { useSearchRecipesMutation } = api;
+export const { 
+  useSearchRecipesMutation,
+  useFetchIngredientsQuery,
+  useAddIngredientMutation,
+  useGetAllIngredientsQuery,
+  useDeleteIngredientMutation,
+} = api;
