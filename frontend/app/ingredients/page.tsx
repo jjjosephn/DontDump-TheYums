@@ -256,18 +256,6 @@ export default function IngredientInventory() {
                                   variant="outline" 
                                   size="icon" 
                                   className="h-7 w-7 rounded-full bg-white/80 hover:bg-white shadow-sm"
-                                >
-                                  <Edit className="h-3 w-3" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Edit</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button 
-                                  variant="outline" 
-                                  size="icon" 
-                                  className="h-7 w-7 rounded-full bg-white/80 hover:bg-white shadow-sm"
                                   onClick={() => handleDeleteIngredient(ingredient.ingredientId)}
                                 >
                                   <Trash2 className="h-3 w-3" />
