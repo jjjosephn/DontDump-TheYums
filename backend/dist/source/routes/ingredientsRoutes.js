@@ -5,6 +5,6 @@ const ingredientsController_1 = require("../controllers/ingredientsController");
 const router = (0, express_1.Router)();
 router.get('/info', ingredientsController_1.fetchIngredients);
 router.post('/add', ingredientsController_1.addIngredient);
-router.get('/', ingredientsController_1.getAllIngredients);
+router.get('/:userId', ingredientsController_1.getAllIngredients);
 router.delete('/delete/:id', ingredientsController_1.deleteIngredient);
 exports.default = router;

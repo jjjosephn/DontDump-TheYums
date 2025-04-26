@@ -38,8 +38,8 @@ export const api = createApi({
         })
       }),
       getAllIngredients: build.query({
-        query: () => ({
-          url: '/ingredients',
+        query: (userId) => ({
+          url: `/ingredients/${userId}`,
           method: 'GET',
         }),
       }),
@@ -47,6 +47,15 @@ export const api = createApi({
         query: (id) => ({
           url: `/ingredients/delete/${id}`,
           method: 'DELETE',
+        }),
+      }),
+
+      // User
+      checkUser: build.mutation<any, {userId: string}>({
+        query: (body) => ({
+          url: '/user/checkUser',
+          method: 'POST',
+          body
         }),
       }),
     }),
@@ -59,4 +68,5 @@ export const {
   useAddIngredientMutation,
   useGetAllIngredientsQuery,
   useDeleteIngredientMutation,
+  useCheckUserMutation,
 } = api;

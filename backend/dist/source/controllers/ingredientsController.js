@@ -26,10 +26,11 @@ const fetchIngredients = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.fetchIngredients = fetchIngredients;
 const addIngredient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, image, expiryDate } = req.body;
+    const { name, image, userId, expiryDate } = req.body;
     try {
         const newIngredient = yield prisma.ingredient.create({
             data: {
+                userId,
                 ingredientName: name,
                 ingredientPicture: image,
                 ingredientDateExpired: new Date(expiryDate),
@@ -45,8 +46,17 @@ const addIngredient = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.addIngredient = addIngredient;
 const getAllIngredients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
     try {
-        const ingredients = yield prisma.ingredient.findMany();
+        const ingredients = yield prisma.ingredient.findMany({
+            where: {
+                userId
+            }
+        });
+        if (!ingredients || ingredients.length === 0) {
+            res.status(404).json({ message: 'No ingredients found for this user.' });
+            return;
+        }
         res.status(200).json(ingredients);
     }
     catch (error) {
