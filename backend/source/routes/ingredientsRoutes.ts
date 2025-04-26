@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/info', fetchIngredients)
 router.post('/add', addIngredient)
-router.get('/', getAllIngredients)
+router.get('/:userId', getAllIngredients)
 router.delete('/delete/:id', deleteIngredient)
 
 export default router
