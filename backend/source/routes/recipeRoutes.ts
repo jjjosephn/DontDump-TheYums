@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getRecipesByIngredients } from '../controllers/recipeController';
+import { getRecipeByComplex, getRecipesByIngredients } from '../controllers/recipeController';
 
 const router = Router();
 
-router.get('/', getRecipesByIngredients )
-
+router.get('/byIng', getRecipesByIngredients )
+router.get('/complex', getRecipeByComplex )
 export default router;
