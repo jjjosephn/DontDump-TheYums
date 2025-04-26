@@ -8,9 +8,11 @@ import { useFetchIngredientsQuery } from "@/app/state/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useUser } from "@clerk/nextjs"
 
 interface AddIngredientFormProps {
   onAddIngredient: (ingredient: {
+    userId: string
     ingredientName: string
     ingredientPicture: string
     ingredientDateAdded: Date
@@ -19,6 +21,7 @@ interface AddIngredientFormProps {
 }
 
 interface Ingredient {
+  userId: string
   id: number
   name: string
   image?: string
@@ -33,6 +36,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
+    const { user } = useUser()
 
     const formatDateForInput = (date: Date) => {
       return date.toISOString().split("T")[0]
@@ -101,6 +105,7 @@ export function AddIngredientForm({ onAddIngredient }: AddIngredientFormProps) {
 
       const newIngredient = {
         ingredientName,
+        userId: user?.id || "",
         ingredientPicture: ingredientPicture || "/FoodImageNotFound.png?height=200&width=200",
         ingredientDateAdded: new Date(),
         ingredientDateExpired: expiryDate,

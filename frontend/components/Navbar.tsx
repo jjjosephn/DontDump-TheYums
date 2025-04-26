@@ -1,16 +1,26 @@
 "use client"
 
+import { useEffect } from "react"
 import { Leaf } from "lucide-react"
 import { Button } from "./ui/button"
 import Link from "next/link"
-import { SignedIn, SignedOut, SignInButton, useUser, UserButton } from "@clerk/nextjs"
+import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/nextjs"
 import { CustomUserButton } from "./CustomUserButton"
+import { useCheckUserMutation } from "@/app/state/api"
 
 const Navbar = () => {
-  const { user } = useUser()
-  const firstName = user?.firstName || ""
-  const lastName = user?.lastName || ""
+  const { user, isSignedIn } = useUser()
+  const [checkUser] = useCheckUserMutation()
 
+  useEffect(() => {
+    if (isSignedIn) {
+      checkUser({ 
+        userId: user?.id 
+      })
+    }
+  }, [isSignedIn, user, checkUser])
+
+  
   return (
     <header className="pl-5 pr-5 w-full sticky top-0 bg-amber-50 z-50 border-b ">
       <div className="flex h-16 items-center justify-between py-4">
@@ -35,7 +45,6 @@ const Navbar = () => {
               <Link href="/donate">Donate</Link>
             </Button>
             <CustomUserButton />
-            
           </nav>
         </SignedIn>
         <SignedOut>

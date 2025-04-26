@@ -16,6 +16,7 @@ import { AddIngredientForm } from "@/components/ingredients/AddIngredientsForm"
 import { useAddIngredientMutation, useGetAllIngredientsQuery, useDeleteIngredientMutation } from "../state/api"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useUser } from "@clerk/nextjs"
 
 interface Ingredient {
   ingredientId: string;
@@ -26,13 +27,15 @@ interface Ingredient {
 }
 
 interface NewIngredient {
+  userId: string;
   ingredientName: string;
   ingredientPicture: string | null;
   ingredientDateExpired: Date;
 }
 
 export default function IngredientInventory() {
-  const { data: ingredients = [], isLoading, refetch } = useGetAllIngredientsQuery({})
+  const { user } = useUser()
+  const { data: ingredients = [], isLoading, refetch } = useGetAllIngredientsQuery(user?.id || "")
   const [searchQuery, setSearchQuery] = useState("")
   const [filterOption, setFilterOption] = useState<"all" | "expiring" | "expired">("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -76,6 +79,7 @@ export default function IngredientInventory() {
   const handleAddIngredient = useCallback(async (newIngredient: NewIngredient) => {
     try {
       await add({
+        userId: newIngredient.userId,
         name: newIngredient.ingredientName,
         image: newIngredient.ingredientPicture,
         expiryDate: newIngredient.ingredientDateExpired.toISOString(),
