@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRecipesByIngredients = void 0;
+exports.getRecipeByComplex = exports.getRecipesByIngredients = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getRecipesByIngredients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -43,3 +43,35 @@ const getRecipesByIngredients = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.getRecipesByIngredients = getRecipesByIngredients;
+const getRecipeByComplex = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { terms, number } = req.query;
+    console.log(number);
+    // validate query parameters
+    if (!terms || !number || isNaN(Number(number))) {
+        res.status(400).json({ error: 'Invalid or missing query parameters: terms or number' });
+        return;
+    }
+    // validate API key
+    const apiKey = process.env.SPOONACULAR_API_KEY;
+    if (!apiKey) {
+        res.status(500).json({ error: 'Spoonacular API key is not configured' });
+        return;
+    }
+    // construct the Spoonacular API URL
+    const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(terms)}&number=${number}&apiKey=${apiKey}`;
+    try {
+        // fetch from Spoonacular API
+        const response = yield fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch recipes from Spoonacular: ${response.status} ${response.statusText}`);
+        }
+        // parse and send the response data
+        const data = yield response.json();
+        res.status(200).json(data);
+    }
+    catch (error) {
+        console.error('Error fetching recipes:', error);
+        res.status(500).json({ error: 'Failed to fetch recipes from Spoonacular' });
+    }
+});
+exports.getRecipeByComplex = getRecipeByComplex;

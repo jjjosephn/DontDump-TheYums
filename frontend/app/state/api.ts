@@ -6,9 +6,17 @@ export const api = createApi({
    tagTypes: [],
    endpoints: (build) => ({
       // Recipes
-      searchRecipes: build.mutation({
+      complexRecipeSearch: build.mutation({
+        query: ({ terms, number }) => ({
+          url: '/recipes/complex', // backend endpoint
+          method: 'GET',
+          params: { terms, number }, // params
+        }),
+      }),
+
+      ingredientRecipeSearch: build.mutation({
         query: ({ ingredients, number }) => ({
-          url: '/api/recipes', // backend endpoint
+          url: '/recipes/byIng', // backend endpoint
           method: 'GET',
           params: { ingredients, number }, // params
         }),
@@ -45,7 +53,8 @@ export const api = createApi({
 });
 
 export const { 
-  useSearchRecipesMutation,
+  useComplexRecipeSearchMutation,
+  useIngredientRecipeSearchMutation,
   useFetchIngredientsQuery,
   useAddIngredientMutation,
   useGetAllIngredientsQuery,

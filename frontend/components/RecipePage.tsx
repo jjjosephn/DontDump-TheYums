@@ -28,7 +28,8 @@ import { Search, Bookmark } from "lucide-react"
 import { ChefHat } from "lucide-react"
 
 // hooks for calling api
-import { useSearchRecipesMutation } from "../app/state/api"
+import { useComplexRecipeSearchMutation } from "../app/state/api"
+import { useIngredientRecipeSearchMutation } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
@@ -56,7 +57,9 @@ type SearchMode = "title" | "ingredients"
 export default function RecipePage() {
     const [activeTab, setActiveTab] = useState("search")
     const [searchMode, setSearchMode] = useState<SearchMode>("title")
-    const [query, setQuery] = useState("") // for search by title
+    const [terms, setTerms] = useState("") // for search by title
+
+    const [loading, setLoading] = useState(false)
 
     // results, handleBookmarkRecipe bookmarkedRecipes
     const [bookmarkedRecipes, setBookmarkedRecipes] = useState<Recipe[]>([])
@@ -75,42 +78,72 @@ export default function RecipePage() {
       },
     ])
     const [selectedIngredients, setselectedIngredients] = useState<string[]>([])
-    const [ searchRecipe ] = useSearchRecipesMutation();
+    const [ ingredientRecipeSearch ] = useIngredientRecipeSearchMutation();
+    const [ complexRecipeSearch ] = useComplexRecipeSearchMutation();
 
     const handleSearch = async () => {
         if (selectedIngredients.length === 0) {
-          setResults([]);
-          return;
+            // need an error message/ui component "please select ingredients to search"
+            setLoading(false);
+            return;
         }
-      
         try {
-          const res = await searchRecipe({ ingredients: selectedIngredients, number: 10 });
-          
-          if (res.data) {
-            const transformedRecipes = res.data.map(recipe => ({
-              id: recipe.id.toString(),
-              title: recipe.title,
-              imageUrl: recipe.image,
-              ingredients: [
-                ...recipe.usedIngredients.map(ing => ing.name),
-                ...recipe.missedIngredients.map(ing => ing.name)
-              ],
-              usedIngredientCount: recipe.usedIngredientCount,
-              missedIngredientCount: recipe.missedIngredientCount,
+            const res = await ingredientRecipeSearch({ ingredients: selectedIngredients, number: 10 });
+            if (res.data) {
+                const transformedRecipes = res.data.map(recipe => ({
+                    id: recipe.id.toString(),
+                    title: recipe.title,
+                    imageUrl: recipe.image,
+                    ingredients: [
+                        ...recipe.usedIngredients.map(ing => ing.name),
+                        ...recipe.missedIngredients.map(ing => ing.name)
+                    ],
+                    usedIngredientCount: recipe.usedIngredientCount,
+                    missedIngredientCount: recipe.missedIngredientCount,
 
-              apiData: recipe
-            }));
-            
-            setResults(transformedRecipes);
-          } else {
-            setResults([]);
-            console.error("Error fetching recipes: No data returned");
-          }
+                    apiData: recipe
+                }));
+                
+                setResults(transformedRecipes);
+            } else {
+                setResults([]);
+                console.error("Error fetching recipes: No data returned");
+            }
         } catch (error) {
-          setResults([]);
-          console.error("Error fetching recipes:", error);
+            setResults([]);
+            console.error("Error fetching recipes:", error);
         }
-      };
+    };
+
+    const handleComplexSearch = async () => {
+        setLoading(true);
+        console.log("complex search called")
+        try {
+            const res = await complexRecipeSearch({ terms: terms, number: 10 });
+            console.log(res)
+            if (res.data && Array.isArray(res.data.results)) {
+                const transformedRecipes = res.data.results.map(recipe => ({
+                    id: recipe.id.toString(),
+                    title: recipe.title,
+                    imageUrl: recipe.image,
+                    ingredients: [], // No ingredients in this response
+                    usedIngredientCount: 0, // Not applicable for complex search
+                    missedIngredientCount: 0, // Not applicable for complex search
+                    apiData: recipe // Store raw recipe data for debugging or future use
+                }));
+                
+                setResults(transformedRecipes);
+            } else {
+                setResults([]);
+                console.error("Error fetching recipes: No data returned");
+            }
+        } catch (error) {
+            setResults([]);
+            console.error("Error fetching recipes:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleBookmarkRecipe = (recipe: Recipe) => {
         if (!bookmarkedRecipes.some((r) => r.id === recipe.id)) {
@@ -179,12 +212,14 @@ return (
                                     <Input
                                         type="text"
                                         placeholder="Enter recipe name"
-                                        value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
+                                        value={ terms }
+                                        onChange={(e) => setTerms(e.target.value)}
                                         className="p1-9"
                                     ></Input>
                                 </div>
-                                <Button onClick={handleSearch}> Search </Button>
+                                <Button onClick={ handleComplexSearch } disabled={ loading }> 
+                                    {loading ? "Searching..." : "Search" } 
+                                </Button>
                             </div>
                         ) : (
                             <div className="flex space-x-2">
@@ -193,8 +228,8 @@ return (
                                     selected={selectedIngredients}
                                     onChange={setselectedIngredients}
                                 />
-                                <Button onClick={handleSearch} disabled={selectedIngredients.length === 0}>
-                                    Search
+                                <Button onClick={ handleSearch } disabled={loading || selectedIngredients.length === 0}>
+                                    {loading ? "Searching..." : "Search"}
                                 </Button>
                             </div>
                         )}
@@ -203,7 +238,7 @@ return (
                         {searchMode === "title" ? (
                         <div className="flex items-center gap-2 mb-2">
                             <ChefHat className="h-5 w-5 text-muted-foreground" />
-                            <h2 className="text-lg font-medium">Recipes matching "{query}"</h2>
+                            <h2 className="text-lg font-medium">Recipes matching "{ terms }"</h2>
                         </div>
                         ) : (
                         <div className="flex items-center gap-2 mb-2">
@@ -235,7 +270,6 @@ return (
                     </div>
                 </div>
             </TabsContent>
-            
             <TabsContent value="bookmarks">
                 <BookmarkedRecipes recipes={bookmarkedRecipes} onRemoveBookmark={handleRemoveBookmark} />
             </TabsContent>
