@@ -28,8 +28,8 @@ import { Search, Bookmark } from "lucide-react"
 import { ChefHat } from "lucide-react"
 
 // hooks for calling api
-import { useComplexRecipeSearchMutation } from "../app/state/api"
-import { useIngredientRecipeSearchMutation } from "../app/state/api"
+import { useComplexRecipeSearchQuery } from "../app/state/api"
+import { useIngredientRecipeSearchQuery } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
@@ -57,7 +57,7 @@ type SearchMode = "title" | "ingredients"
 export default function RecipePage() {
     const [activeTab, setActiveTab] = useState("search")
     const [searchMode, setSearchMode] = useState<SearchMode>("title")
-    const [terms, setTerms] = useState("") // for search by title
+    const [searchTerms, setSearchTerms] = useState("") // for search by title
 
     const [loading, setLoading] = useState(false)
 
@@ -78,19 +78,33 @@ export default function RecipePage() {
       },
     ])
     const [selectedIngredients, setselectedIngredients] = useState<string[]>([])
-    const [ ingredientRecipeSearch ] = useIngredientRecipeSearchMutation();
-    const [ complexRecipeSearch ] = useComplexRecipeSearchMutation();
+    const {
+        data: ingredientData,
+        error: ingredientError,
+        isLoading: ingredientLoading,
+      } = useIngredientRecipeSearchQuery({
+        ingredients: selectedIngredients,
+        number: 10,
+      });
+      const {
+        data: complexData,
+        error: complexError,
+        isLoading: complexLoading,
+      } = useComplexRecipeSearchQuery({
+        terms: searchTerms,
+        number: 10,
+      });
 
     const handleSearch = async () => {
+        console.log()
         if (selectedIngredients.length === 0) {
             // need an error message/ui component "please select ingredients to search"
             setLoading(false);
             return;
         }
         try {
-            const res = await ingredientRecipeSearch({ ingredients: selectedIngredients, number: 10 });
-            if (res.data) {
-                const transformedRecipes = res.data.map(recipe => ({
+            if (ingredientData) {
+                const transformedRecipes = ingredientData.map(recipe => ({
                     id: recipe.id.toString(),
                     title: recipe.title,
                     imageUrl: recipe.image,
@@ -119,10 +133,8 @@ export default function RecipePage() {
         setLoading(true);
         console.log("complex search called")
         try {
-            const res = await complexRecipeSearch({ terms: terms, number: 10 });
-            console.log(res)
-            if (res.data && Array.isArray(res.data.results)) {
-                const transformedRecipes = res.data.results.map(recipe => ({
+            if (complexData && Array.isArray(complexData.results)) {
+                const transformedRecipes = complexData.results.map(recipe => ({
                     id: recipe.id.toString(),
                     title: recipe.title,
                     imageUrl: recipe.image,
@@ -212,8 +224,8 @@ return (
                                     <Input
                                         type="text"
                                         placeholder="Enter recipe name"
-                                        value={ terms }
-                                        onChange={(e) => setTerms(e.target.value)}
+                                        value={ searchTerms }
+                                        onChange={(e) => setSearchTerms(e.target.value)}
                                         className="p1-9"
                                     ></Input>
                                 </div>
@@ -238,7 +250,7 @@ return (
                         {searchMode === "title" ? (
                         <div className="flex items-center gap-2 mb-2">
                             <ChefHat className="h-5 w-5 text-muted-foreground" />
-                            <h2 className="text-lg font-medium">Recipes matching "{ terms }"</h2>
+                            <h2 className="text-lg font-medium">Recipes matching "{ searchTerms }"</h2>
                         </div>
                         ) : (
                         <div className="flex items-center gap-2 mb-2">
