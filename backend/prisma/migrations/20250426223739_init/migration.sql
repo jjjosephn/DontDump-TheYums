@@ -9,6 +9,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Ingredient" (
     "ingredientId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "ingredientName" TEXT NOT NULL,
     "ingredientPicture" TEXT NOT NULL,
     "ingredientDateAdded" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -35,3 +36,6 @@ CREATE TABLE "SavedRecipe" (
 
     CONSTRAINT "SavedRecipe_pkey" PRIMARY KEY ("recipeId")
 );
+
+-- AddForeignKey
+ALTER TABLE "Ingredient" ADD CONSTRAINT "Ingredient_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

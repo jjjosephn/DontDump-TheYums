@@ -26,11 +26,12 @@ export const addIngredient = async (
    req: Request,
    res: Response
 ): Promise<void> => {
-   const { name, image, expiryDate } = req.body
+   const { name, image, userId, expiryDate } = req.body
 
    try {
       const newIngredient = await prisma.ingredient.create({
          data: {
+            userId,
             ingredientName: name,
             ingredientPicture: image,
             ingredientDateExpired: new Date(expiryDate),
@@ -48,8 +49,19 @@ export const getAllIngredients = async (
    req: Request,
    res: Response
 ): Promise<void> => {
+   const { userId } = req.params
    try {
-      const ingredients = await prisma.ingredient.findMany()
+      const ingredients = await prisma.ingredient.findMany({
+         where: {
+            userId
+         }
+      })
+
+      if (!ingredients || ingredients.length === 0) {
+         res.status(404).json({ message: 'No ingredients found for this user.' })
+         return
+      }
+      
       res.status(200).json(ingredients)
    } catch (error) {
       console.error('Error fetching all ingredients:', error);
