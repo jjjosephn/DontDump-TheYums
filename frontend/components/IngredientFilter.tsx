@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -14,6 +15,7 @@ import Image from "next/image"
 import { format } from "date-fns"
 
 interface Ingredient {
+    userId: string
     name: string
     imageUrl: string
     expirationDate: Date
@@ -23,11 +25,24 @@ interface IngredientFilterProps {
     inventory: Ingredient[]
     selected: string[] | undefined
     onChange: (selected: string[]) => void
+    onFetchIngredients: () => void
 }
 
-export default function Ingredientfilter(
-    { inventory, selected = [], onChange }: IngredientFilterProps) {
-        const[isOpen, setIsOpen] = useState(false)
+export default function Ingredientfilter({
+    inventory, 
+    selected = [], 
+    onChange,
+    onFetchIngredients
+   }: IngredientFilterProps) {
+        const [isOpen, setIsOpen] = useState(false)
+
+        useEffect(() => {
+          if (isOpen) {
+            onFetchIngredients()
+            console.log("Inventory passed to IngredientFilter:", inventory)
+          }
+        }, [isOpen, onFetchIngredients])
+
         const handleToggle = (ingredientName: string) => {
             const updatedSelected = selected.includes(ingredientName)
             ? selected.filter((item) => item !== ingredientName)
@@ -35,10 +50,17 @@ export default function Ingredientfilter(
             onChange(updatedSelected)
         }
 
+        const handleOpen = () => {
+          setIsOpen(true)
+          onFetchIngredients()
+        }
+
         return (
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-[150px] justify-start">
+                <Button variant="outline"
+                  className="w-[150px] justify-start"
+                  onClick={ handleOpen }>
                   <Filter className="mr-2 h-4 w-4" />
                   {selected.length > 0 ? `${selected.length} selected` : "Filter"}
                 </Button>

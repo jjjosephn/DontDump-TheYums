@@ -9,6 +9,7 @@
 // filter component: (dialog box -> scrollarea -> multiselect)
 // create separate filter component file
 import { useState, useEffect } from "react"
+import { useUser } from "@clerk/nextjs"
 
 // ui components
 import { Input } from "@/components/ui/input"
@@ -30,9 +31,11 @@ import { ChefHat } from "lucide-react"
 // hooks for calling api
 import { useComplexRecipeSearchQuery } from "../app/state/api"
 import { useIngredientRecipeSearchQuery } from "../app/state/api"
+import { useGetIngredientsFilterQuery } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
+    userId: string
     name: string
     imageUrl: string
     expirationDate: Date
@@ -45,55 +48,57 @@ interface Recipe {
     imageUrl?: string
 }
 
-interface Recipe {
-    id: string
-    title: string
-    ingredients: string[]
-    imageUrl?: string
-}
-
 type SearchMode = "title" | "ingredients"
 
 export default function RecipePage() {
+    const { user } = useUser()
     const [activeTab, setActiveTab] = useState("search")
     const [searchMode, setSearchMode] = useState<SearchMode>("title")
     const [searchTerms, setSearchTerms] = useState("") // for search by title
-
     const [loading, setLoading] = useState(false)
-
-    // results, handleBookmarkRecipe bookmarkedRecipes
     const [bookmarkedRecipes, setBookmarkedRecipes] = useState<Recipe[]>([])
     const [results, setResults] = useState<Recipe[]>([])
-    
-    const [inventory, setInventory] = useState<Ingredient[]>([
-        {
-        name: "Sugar",
-        imageUrl: "/placeholder.svg",
-        expirationDate: new Date(2024, 12, 31),
-      },
-      {
-        name: "Chicken",
-        imageUrl: "/placeholder.svg",
-        expirationDate: new Date(2024, 4, 5),
-      },
-    ])
-    const [selectedIngredients, setselectedIngredients] = useState<string[]>([])
+    const [inventory, setInventory] = useState<Ingredient[]>([])
+    const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
+    const {
+        data: ingredientRecipeData,
+        error: ingredientRecipeError,
+        isLoading: ingredientRecipeLoading,
+      } = useIngredientRecipeSearchQuery({
+        ingredients: selectedIngredients,
+        number: 10,
+    });
+
+    const {
+        data: complexRecipeData,
+        error: complexRecipeError,
+        isLoading: complexLoading,
+        } = useComplexRecipeSearchQuery({
+        terms: searchTerms,
+        number: 10,
+    });
+
     const {
         data: ingredientData,
         error: ingredientError,
         isLoading: ingredientLoading,
-      } = useIngredientRecipeSearchQuery({
-        ingredients: selectedIngredients,
-        number: 10,
-      });
-      const {
-        data: complexData,
-        error: complexError,
-        isLoading: complexLoading,
-      } = useComplexRecipeSearchQuery({
-        terms: searchTerms,
-        number: 10,
-      });
+        isFetching: ingredientFetching,
+        refetch,
+    } = useGetIngredientsFilterQuery({
+        filter: { userId: user?.id },
+    });
+
+    useEffect(() => {
+        if (ingredientData) {
+          const transformedInventory = ingredientData.map((ingredient) => ({
+            userId: ingredient.userId,
+            name: ingredient.ingredientName,
+            imageUrl: ingredient.ingredientPicture,
+            expirationDate: new Date(ingredient.ingredientDateExpired),
+          }));
+          setInventory(transformedInventory);
+        }
+      }, [ingredientData]);
 
     const handleSearch = async () => {
         console.log()
@@ -103,8 +108,8 @@ export default function RecipePage() {
             return;
         }
         try {
-            if (ingredientData) {
-                const transformedRecipes = ingredientData.map(recipe => ({
+            if (ingredientRecipeData) {
+                const transformedRecipes = ingredientRecipeData.map(recipe => ({
                     id: recipe.id.toString(),
                     title: recipe.title,
                     imageUrl: recipe.image,
@@ -133,8 +138,8 @@ export default function RecipePage() {
         setLoading(true);
         console.log("complex search called")
         try {
-            if (complexData && Array.isArray(complexData.results)) {
-                const transformedRecipes = complexData.results.map(recipe => ({
+            if (complexRecipeData && Array.isArray(complexRecipeData.results)) {
+                const transformedRecipes = complexRecipeData.results.map(recipe => ({
                     id: recipe.id.toString(),
                     title: recipe.title,
                     imageUrl: recipe.image,
@@ -172,7 +177,7 @@ export default function RecipePage() {
     const handleRecipeClick = (recipe) => {
         console.log("Recipe clicked:", recipe);
         // Navigate to a detailed view or perform another action
-      };
+    };
 
 return (
     <div className="space-y-4">
@@ -236,12 +241,13 @@ return (
                         ) : (
                             <div className="flex space-x-2">
                                 <IngredientFilter
-                                    inventory={inventory}
-                                    selected={selectedIngredients}
-                                    onChange={setselectedIngredients}
+                                    inventory={ inventory }
+                                    selected={ selectedIngredients }
+                                    onChange={ setSelectedIngredients }
+                                    onFetchIngredients={ refetch }
                                 />
-                                <Button onClick={ handleSearch } disabled={loading || selectedIngredients.length === 0}>
-                                    {loading ? "Searching..." : "Search"}
+                                <Button onClick={ handleSearch } disabled={ loading || selectedIngredients.length === 0 }>
+                                    { loading ? "Searching..." : "Search" }
                                 </Button>
                             </div>
                         )}
