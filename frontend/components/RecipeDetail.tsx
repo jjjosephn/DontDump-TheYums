@@ -3,7 +3,6 @@
 import { useGetRecipeDetailQuery } from "../app/state/api"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
 import Image from "next/image"
 
 interface RecipeDetailProps {
@@ -33,11 +32,6 @@ export function RecipeDetail({ open, onOpenChange, recipeId }: RecipeDetailProps
             {isLoading ? "Loading..." : error ? "Error" : recipe?.title || "Recipe Details"}
           </DialogTitle>
           {/* We're using the built-in DialogClose component instead of a custom button */}
-          <DialogClose asChild>
-            <Button variant="ghost" size="icon" className="absolute right-4 top-4" aria-label="Close">
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogClose>
         </DialogHeader>
 
         {isLoading && <div className="p-4 text-center">Loading recipe details...</div>}

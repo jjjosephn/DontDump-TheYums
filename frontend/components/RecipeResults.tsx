@@ -3,6 +3,7 @@
 import React from "react";
 import RecipeCard from "@/components/RecipeCard";
 
+// For the recipesfrom the API
 interface Recipe {
   id: string;
   title: string;
@@ -10,10 +11,18 @@ interface Recipe {
   imageUrl?: string;
 }
 
+// For the savedRecipes in the db
+interface SavedRecipe {
+  savedRecipeId: string
+  userId: string
+  recipeName: string
+  recipePicture: string
+}
+
 interface RecipeResultsProps {
   recipes: Recipe[];
   onBookmark: (recipe: Recipe) => void;
-  bookmarkedRecipes: Recipe[];
+  bookmarkedRecipes: SavedRecipe[] | undefined;
   searchMode?: "title" | "ingredients";
   onRecipeClick?: (recipe: Recipe) => void; // Optional callback for recipe click
 }
@@ -21,12 +30,13 @@ interface RecipeResultsProps {
 export default function RecipeResults({
   recipes = [], // Default to an empty array
   onBookmark,
-  bookmarkedRecipes,
+  bookmarkedRecipes = [], // Default to an empty array
   searchMode = "title",
   onRecipeClick,
 }: RecipeResultsProps) {
   const isBookmarked = (recipeId: string) => {
-    return bookmarkedRecipes.some((recipe) => recipe.id === recipeId);
+    if (!bookmarkedRecipes) return false
+    return bookmarkedRecipes.some((savedRecipe) => savedRecipe.savedRecipeId === recipeId)
   };
 
   if (!recipes || recipes.length === 0) {
@@ -38,7 +48,7 @@ export default function RecipeResults({
             : "Select ingredients and click Search to find recipes that use them."}
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -49,7 +59,7 @@ export default function RecipeResults({
           recipe={recipe}
           isBookmarked={isBookmarked(recipe.id)}
           onBookmark={onBookmark}
-          onClick={onRecipeClick} // Pass the click handler
+          onClick={onRecipeClick}
         />
       ))}
     </div>

@@ -76,9 +76,6 @@ const getRecipeByComplex = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.getRecipeByComplex = getRecipeByComplex;
 const getRecipeDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    // remove later
-    console.log("called getRecipeDetail");
-    console.log(id);
     // validate query parameters
     if (!id) {
         res.status(400).json({ error: 'Invalid or missing query parameters: recipeId' });
@@ -111,39 +108,47 @@ exports.getRecipeDetail = getRecipeDetail;
 const bookmarkRecipe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, id, name, image } = req.body;
     try {
-        const newRecipe = yield prisma.savedRecipe.create({
+        const newSavedRecipe = yield prisma.savedRecipe.create({
             data: {
-                userId: userId,
-                recipeId: id,
+                userId,
+                savedRecipeId: id,
                 recipeName: name,
                 recipePicture: image,
             },
         });
-        res.status(201).json(newRecipe);
+        res.status(201).json(newSavedRecipe);
         return;
     }
     catch (error) {
-        console.error('Error adding recipe bookmark:', error);
-        res.status(500).json({ error: 'Failed to add recipe bookmark' });
+        console.error('Error bookmarking recipe:', error);
+        res.status(500).json({ error: 'Failed to bookmark recipe' });
     }
 });
 exports.bookmarkRecipe = bookmarkRecipe;
 const getAllRecipes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
-        const recipes = yield prisma.savedRecipe.findMany({
-            where: {
-                userId
+        // Directly query the SavedRecipe table using the userId
+        const savedRecipes = yield prisma.savedRecipe.findMany({
+            where: { userId },
+            select: {
+                savedRecipeId: true,
+                recipeName: true,
+                recipePicture: true,
+                userId: true
             }
         });
-        if (!recipes || recipes.length === 0) {
-            res.status(404).json({ message: 'No recipes found' });
-            return;
-        }
+        // Map to the expected recipe format
+        const recipes = savedRecipes.map(sr => ({
+            id: sr.savedRecipeId,
+            title: sr.recipeName,
+            image: sr.recipePicture,
+            // Add other necessary fields from your Recipe type if needed
+        }));
         res.status(200).json(recipes);
     }
     catch (error) {
-        console.error('Error fetching recipes:', error);
+        console.error('Error:', error);
         res.status(500).json({ error: 'Failed to fetch recipes' });
     }
 });
@@ -153,7 +158,7 @@ const unbookmarkRecipe = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const unbookmarkedRecipe = yield prisma.savedRecipe.delete({
             where: {
-                recipeId: id
+                savedRecipeId: id
             },
         });
         res.status(200).json(unbookmarkedRecipe);
