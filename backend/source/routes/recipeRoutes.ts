@@ -16,6 +16,6 @@ router.get('/complex', getRecipeByComplex)
 router.get('/getIng/:userid', getAllIngredients)
 router.post('/bookmark', bookmarkRecipe)
 router.delete('/unbookmark/:recipeId', unbookmarkRecipe)
-router.get('/', getAllRecipes)
+router.get('/bookmarks/user/:userId', getAllRecipes)
 router.get('/:id', getRecipeDetail)
 export default router;

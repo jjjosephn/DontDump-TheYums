@@ -1,10 +1,8 @@
 [
    {
-     "recipeId": "rec1",
-     "recipeName": "Spaghetti Bolognese"
-   },
-   {
-     "recipeId": "rec2",
-     "recipeName": "Avocado Toast"
+      "savedRecipeId": "1",
+      "userId": "2wI0Jw5v4T5m7IDtvukcvCSQomn",
+      "recipeName": "Spaghetti Bolognese",
+      "recipePicture": "https://example.com/spaghetti-bolognese.jpg"
    }
  ]

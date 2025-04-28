@@ -16,13 +16,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-
 import { Label } from "@/components/ui/label" //
 
 // custom ui components
 import IngredientFilter from "@/components/IngredientFilter"
 import RecipeResults from "@/components/RecipeResults"
-import BookmarkedRecipes from "./BookmarkedRecipes"
+import BookmarkedRecipes from "@/components/BookmarkedRecipes"
 import { RecipeDetail } from "@/components/RecipeDetail"
 
 // icons
@@ -33,7 +32,12 @@ import { ChefHat } from "lucide-react"
 import { useComplexRecipeSearchQuery } from "../app/state/api"
 import { useIngredientRecipeSearchQuery } from "../app/state/api"
 import { useGetIngredientsFilterQuery } from "../app/state/api"
-import { useGetRecipeDetailQuery } from "../app/state/api"
+
+import { useGetRecipeDetailQuery } from "../app/state/api" // this is called in the RecipeDetail component
+
+import { useBookmarkRecipeMutation } from "../app/state/api"
+import { useUnbookmarkRecipeMutation } from "../app/state/api"
+import { useGetAllRecipesQuery } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
@@ -58,7 +62,6 @@ export default function RecipePage() {
     const [searchMode, setSearchMode] = useState<SearchMode>("title")
     const [searchTerms, setSearchTerms] = useState("") // for search by title
     const [loading, setLoading] = useState(false)
-    const [bookmarkedRecipes, setBookmarkedRecipes] = useState<Recipe[]>([])
     const [results, setResults] = useState<Recipe[]>([])
     const [inventory, setInventory] = useState<Ingredient[]>([])
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
@@ -90,6 +93,12 @@ export default function RecipePage() {
     } = useGetIngredientsFilterQuery({
         filter: { userId: user?.id },
     });
+
+    const [bookmarkRecipe] = useBookmarkRecipeMutation();
+    const [unbookmarkRecipe] = useUnbookmarkRecipeMutation();
+    const { data: bookmarkedRecipes, isLoading, error } = useGetAllRecipesQuery(user?.id); // this is meant to be saved recipes
+
+    // Query for recipe details called in the RecipeDetail component
 
     useEffect(() => {
         if (ingredientData) {
@@ -165,19 +174,33 @@ export default function RecipePage() {
         }
     }
 
-    const handleBookmarkRecipe = (recipe: Recipe) => {
-        if (!bookmarkedRecipes.some((r) => r.id === recipe.id)) {
-          const updatedBookmarks = [...bookmarkedRecipes, recipe]
-          setBookmarkedRecipes(updatedBookmarks)
+    const handleBookmarkRecipe = async (recipe: Recipe) => {
+        console.log("handleBookmarkRecipe called")
+        console.log(recipe.title)
+        console.log(recipe.imageUrl)
+        console.log(recipe.id)
+        // recipeController req.body for LHS and RHS is just the recipe data/userid
+        try {
+          await bookmarkRecipe({
+            userId: user?.id,
+            id: recipe.id,
+            name: recipe.title,
+            image: recipe.imageUrl,
+          }).unwrap();
+        } catch (err) {
+          console.error('Bookmark failed:', err);
+        }
+      }
+    
+    const handleRemoveBookmark = async (recipeId: string) => {
+        try {
+            await unbookmarkRecipe(recipe).unwrap();
+        } catch (err) {
+            console.error('Bookmark failed:', err);
         }
     }
-    
-    const handleRemoveBookmark = (recipeId: string) => {
-        const updatedBookmarks = bookmarkedRecipes.filter((recipe) => recipe.id !== recipeId)
-        setBookmarkedRecipes(updatedBookmarks)
-    }
 
-    const handleRecipeClick = async (recipe) => {
+    const handleRecipeClick = async (recipe: Recipe) => {
         setSelectedRecipeId(recipe.id); // Set the selected recipe ID
     };
 
