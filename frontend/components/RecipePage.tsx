@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label" //
 import IngredientFilter from "@/components/IngredientFilter"
 import RecipeResults from "@/components/RecipeResults"
 import BookmarkedRecipes from "./BookmarkedRecipes"
+import { RecipeDetail } from "@/components/RecipeDetail"
 
 // icons
 import { Search, Bookmark } from "lucide-react"
@@ -32,6 +33,7 @@ import { ChefHat } from "lucide-react"
 import { useComplexRecipeSearchQuery } from "../app/state/api"
 import { useIngredientRecipeSearchQuery } from "../app/state/api"
 import { useGetIngredientsFilterQuery } from "../app/state/api"
+import { useGetRecipeDetailQuery } from "../app/state/api"
 
 // typing (review later)
 interface Ingredient {
@@ -60,6 +62,7 @@ export default function RecipePage() {
     const [results, setResults] = useState<Recipe[]>([])
     const [inventory, setInventory] = useState<Ingredient[]>([])
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
+    const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null)
     const {
         data: ingredientRecipeData,
         error: ingredientRecipeError,
@@ -174,9 +177,8 @@ export default function RecipePage() {
         setBookmarkedRecipes(updatedBookmarks)
     }
 
-    const handleRecipeClick = (recipe) => {
-        console.log("Recipe clicked:", recipe);
-        // Navigate to a detailed view or perform another action
+    const handleRecipeClick = async (recipe) => {
+        setSelectedRecipeId(recipe.id); // Set the selected recipe ID
     };
 
 return (
@@ -284,7 +286,14 @@ return (
                         bookmarkedRecipes={ bookmarkedRecipes }
                         onRecipeClick={ handleRecipeClick }
                         searchMode={ searchMode } // show diff text depending on search mod
-                        /> 
+                        />
+                        <RecipeDetail 
+                        recipeId={ selectedRecipeId }
+                        open={ !!selectedRecipeId }
+                        onOpenChange={ (open) => {
+                            if (!open) setSelectedRecipeId(null)
+                        } }
+                        />
                     </div>
                 </div>
             </TabsContent>

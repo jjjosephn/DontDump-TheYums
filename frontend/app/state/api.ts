@@ -29,6 +29,36 @@ export const api = createApi({
         }),
       }),
 
+      bookmarkRecipe: build.mutation({
+        query: (recipe) => ({
+          url: '/recipes/bookmark',
+          method: 'POST',
+          body: recipe,
+        }),
+      }),
+
+      unbookmarkRecipe: build.mutation({
+        query: (recipeId) => ({
+          url: `/recipes/unbookmark/${recipeId}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      getAllRecipes: build.query({
+        query: (query) => ({
+          url: '/recipes', // backend endpoint
+          method: 'GET',
+          params: { query }, // params
+        }),
+      }),
+
+      getRecipeDetail: build.query({
+        query: (id) => ({
+          url: `/recipes/${id}`, // backend endpoint
+          method: 'GET',
+        }),
+      }),
+
       // Ingredients
       fetchIngredients: build.query({
         query: (query) => ({
@@ -72,6 +102,10 @@ export const {
   useComplexRecipeSearchQuery,
   useIngredientRecipeSearchQuery,
   useGetIngredientsFilterQuery,
+  useBookmarkRecipeMutation,
+  useUnbookmarkRecipeMutation,
+  useGetAllRecipesQuery,
+  useGetRecipeDetailQuery,
   useFetchIngredientsQuery,
   useAddIngredientMutation,
   useGetAllIngredientsQuery,

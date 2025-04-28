@@ -41,6 +41,9 @@ model Food {
 }
 
 model SavedRecipe {
-  recipeId   String @id @default(uuid())
-  recipeName String
+  recipeId        String @id @default(uuid())
+  userId          String
+  recipeName      String
+  recipePicture   String
+
 }
