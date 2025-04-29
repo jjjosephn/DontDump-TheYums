@@ -3,7 +3,7 @@
 import React from "react";
 import RecipeCard from "@/components/RecipeCard";
 
-// For the recipesfrom the API
+// For the recipes from the API
 interface Recipe {
   id: string;
   title: string;
@@ -13,7 +13,7 @@ interface Recipe {
 
 // For the savedRecipes in the db
 interface SavedRecipe {
-  savedRecipeId: string
+  id: string
   userId: string
   recipeName: string
   recipePicture: string
@@ -22,6 +22,7 @@ interface SavedRecipe {
 interface RecipeResultsProps {
   recipes: Recipe[];
   onBookmark: (recipe: Recipe) => void;
+  onRemove: (recipeId: string) => void;
   bookmarkedRecipes: SavedRecipe[] | undefined;
   searchMode?: "title" | "ingredients";
   onRecipeClick?: (recipe: Recipe) => void; // Optional callback for recipe click
@@ -30,13 +31,19 @@ interface RecipeResultsProps {
 export default function RecipeResults({
   recipes = [], // Default to an empty array
   onBookmark,
+  onRemove,
   bookmarkedRecipes = [], // Default to an empty array
   searchMode = "title",
   onRecipeClick,
 }: RecipeResultsProps) {
   const isBookmarked = (recipeId: string) => {
     if (!bookmarkedRecipes) return false
-    return bookmarkedRecipes.some((savedRecipe) => savedRecipe.savedRecipeId === recipeId)
+    for (let i = 0; i < bookmarkedRecipes.length; i++) {
+      if (bookmarkedRecipes[i].id === recipeId) {
+        return true
+      }
+    }
+    return false
   };
 
   if (!recipes || recipes.length === 0) {
@@ -59,6 +66,7 @@ export default function RecipeResults({
           recipe={recipe}
           isBookmarked={isBookmarked(recipe.id)}
           onBookmark={onBookmark}
+          onRemove={onRemove}
           onClick={onRecipeClick}
         />
       ))}

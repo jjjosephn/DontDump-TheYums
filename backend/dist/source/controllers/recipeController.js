@@ -108,6 +108,13 @@ exports.getRecipeDetail = getRecipeDetail;
 const bookmarkRecipe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, id, name, image } = req.body;
     try {
+        const existing = yield prisma.savedRecipe.findFirst({
+            where: { userId, savedRecipeId: id }
+        });
+        if (existing) {
+            res.status(400).json({ error: 'Recipe already bookmarked' });
+            return;
+        }
         const newSavedRecipe = yield prisma.savedRecipe.create({
             data: {
                 userId,
@@ -127,22 +134,24 @@ const bookmarkRecipe = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.bookmarkRecipe = bookmarkRecipe;
 const getAllRecipes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
+    console.log("called getting all recipes");
     try {
         // Directly query the SavedRecipe table using the userId
         const savedRecipes = yield prisma.savedRecipe.findMany({
             where: { userId },
             select: {
                 savedRecipeId: true,
+                userId: true,
                 recipeName: true,
                 recipePicture: true,
-                userId: true
             }
         });
         // Map to the expected recipe format
         const recipes = savedRecipes.map(sr => ({
             id: sr.savedRecipeId,
             title: sr.recipeName,
-            image: sr.recipePicture,
+            ingredients: [],
+            imageUrl: sr.recipePicture,
             // Add other necessary fields from your Recipe type if needed
         }));
         res.status(200).json(recipes);

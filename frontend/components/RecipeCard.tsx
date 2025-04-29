@@ -22,13 +22,15 @@ interface RecipeCardProps {
 
 export default function RecipeCard({
   recipe,
-  isBookmarked = false,
+  isBookmarked,
   onBookmark,
   onRemove,
   onClick,
   showBookmarkButton = true,
   showRemoveButton = false,
 }: RecipeCardProps) {
+  console.log(recipe + " is current card")
+  console.log(isBookmarked)
   return (
     <div
       className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
