@@ -98,20 +98,6 @@ export default function RecipePage() {
     const [unbookmarkRecipe] = useUnbookmarkRecipeMutation();
     const { data: bookmarkedRecipes, isLoading, error } = useGetAllRecipesQuery(user?.id); // this is meant to be saved recipes
 
-    // Query for recipe details called in the RecipeDetail component
-
-    useEffect(() => {
-        if (ingredientData) {
-          const transformedInventory = ingredientData.map((ingredient) => ({
-            userId: ingredient.userId,
-            name: ingredient.ingredientName,
-            imageUrl: ingredient.ingredientPicture,
-            expirationDate: new Date(ingredient.ingredientDateExpired),
-          }));
-          setInventory(transformedInventory);
-        }
-      }, [ingredientData]);
-
     const handleSearch = async () => {
         console.log()
         if (selectedIngredients.length === 0) {
@@ -175,10 +161,6 @@ export default function RecipePage() {
     }
 
     const handleBookmarkRecipe = async (recipe: Recipe) => {
-        console.log("handleBookmarkRecipe called")
-        console.log(recipe.title)
-        console.log(recipe.imageUrl)
-        console.log(recipe.id)
         // recipeController req.body for LHS and RHS is just the recipe data/userid
         try {
           await bookmarkRecipe({
@@ -190,9 +172,10 @@ export default function RecipePage() {
         } catch (err) {
           console.error('Bookmark failed:', err);
         }
-      }
+    }
     
     const handleRemoveBookmark = async (recipeId: string) => {
+        console.log("handleRemoveBookmark called")
         try {
             await unbookmarkRecipe(recipe).unwrap();
         } catch (err) {
@@ -201,7 +184,7 @@ export default function RecipePage() {
     }
 
     const handleRecipeClick = async (recipe: Recipe) => {
-        setSelectedRecipeId(recipe.id); // Set the selected recipe ID
+        setSelectedRecipeId(recipe.id); // Set the selected recipe ID needed for the recipeDetails
     };
 
 return (
@@ -306,6 +289,7 @@ return (
                         <RecipeResults
                         recipes={ results }
                         onBookmark={ handleBookmarkRecipe }
+                        onRemove={ handleRemoveBookmark }
                         bookmarkedRecipes={ bookmarkedRecipes }
                         onRecipeClick={ handleRecipeClick }
                         searchMode={ searchMode } // show diff text depending on search mod

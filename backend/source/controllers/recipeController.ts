@@ -121,6 +121,14 @@ export const getRecipesByIngredients = async (req: Request, res: Response): Prom
   const { userId, id, name, image } = req.body
 
   try {
+    const existing = await prisma.savedRecipe.findFirst({
+      where: { userId, savedRecipeId: id }
+    });
+    if (existing) {
+      res.status(400).json({ error: 'Recipe already bookmarked' });
+      return;
+    }
+    
      const newSavedRecipe = await prisma.savedRecipe.create({
         data: {
            userId,
@@ -142,16 +150,16 @@ export const getAllRecipes = async (
   res: Response
 ): Promise<void> => {
   const { userId } = req.params;
-  
+  console.log("called getting all recipes")
   try {
     // Directly query the SavedRecipe table using the userId
     const savedRecipes = await prisma.savedRecipe.findMany({
       where: { userId },
       select: {
         savedRecipeId: true,
+        userId: true,
         recipeName: true,
         recipePicture: true,
-        userId: true
       }
     });
 
@@ -159,7 +167,8 @@ export const getAllRecipes = async (
     const recipes = savedRecipes.map(sr => ({
       id: sr.savedRecipeId,
       title: sr.recipeName,
-      image: sr.recipePicture,
+      ingredients: [],
+      imageUrl: sr.recipePicture,
       // Add other necessary fields from your Recipe type if needed
     }));
 

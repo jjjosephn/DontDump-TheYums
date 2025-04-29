@@ -45,10 +45,10 @@ export const api = createApi({
       }),
 
       getAllRecipes: build.query({
-        query: (query) => ({
-          url: '/recipes', // backend endpoint
+        query: (userId) => ({
+          url: `/recipes/bookmarks/${userId}`, // backend endpoint
           method: 'GET',
-          params: { query }, // params
+          params: { userId }, // params
         }),
       }),
 
