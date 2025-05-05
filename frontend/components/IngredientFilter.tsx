@@ -30,7 +30,7 @@ interface IngredientFilterProps {
 }
 
 export default function IngredientFilter({
-    inventory, 
+    inventory = [], 
     selected = [], 
     onChange,
     onFetchIngredients

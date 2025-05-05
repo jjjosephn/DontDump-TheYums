@@ -163,13 +163,16 @@ const getAllRecipes = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getAllRecipes = getAllRecipes;
 const unbookmarkRecipe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { recipeId } = req.params;
+    const { userId, recipeId } = req.params;
     try {
         console.log("controller called:", recipeId);
         const unbookmarkedRecipe = yield prisma.savedRecipe.delete({
             where: {
-                savedRecipeId: recipeId
-            },
+                userId_savedRecipeId: {
+                    userId,
+                    savedRecipeId: recipeId,
+                }
+            }
         });
         res.status(200).json(unbookmarkedRecipe);
     }
