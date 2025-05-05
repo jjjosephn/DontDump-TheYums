@@ -38,14 +38,9 @@ import { useGetRecipeDetailQuery } from "../app/state/api" // this is called in 
 import { useBookmarkRecipeMutation } from "../app/state/api"
 import { useUnbookmarkRecipeMutation } from "../app/state/api"
 import { useGetAllRecipesQuery } from "../app/state/api"
+import { set } from "date-fns"
 
 // typing (review later)
-interface Ingredient {
-    userId: string
-    name: string
-    imageUrl: string
-    expirationDate: Date
-}
 
 interface Recipe {
     id: string
@@ -96,10 +91,8 @@ export default function RecipePage() {
 
     const [bookmarkRecipe] = useBookmarkRecipeMutation();
     const [unbookmarkRecipe] = useUnbookmarkRecipeMutation();
-    const { data: bookmarkedRecipes, isLoading, error } = useGetAllRecipesQuery(user?.id); // this is meant to be saved recipes
-
+    const { data: bookmarkedRecipes, isLoading, error, refetch:refetchBookmarks } = useGetAllRecipesQuery(user?.id); // this is meant to be saved recipes
     const handleSearch = async () => {
-        console.log()
         if (selectedIngredients.length === 0) {
             // need an error message/ui component "please select ingredients to search"
             setLoading(false);
@@ -177,19 +170,31 @@ export default function RecipePage() {
     const handleRemoveBookmark = async (recipeId: string) => {
         console.log("handleRemoveBookmark called")
         try {
-            await unbookmarkRecipe(recipe).unwrap();
+            console.log("handle remove bookmark", recipeId);
+            await unbookmarkRecipe(recipeId)
+            await refetchBookmarks()
         } catch (err) {
-            console.error('Bookmark failed:', err);
+            console.error('Unbookmark failed:', err);
         }
     }
 
     const handleRecipeClick = async (recipe: Recipe) => {
         setSelectedRecipeId(recipe.id); // Set the selected recipe ID needed for the recipeDetails
+        console.log("recipe clicked", recipe.id)
     };
 
 return (
     <div className="space-y-4">
-        <Tabs defaultValue="search" value={activeTab} onValueChange={setActiveTab}>
+        <Tabs 
+        defaultValue="search" 
+        value={activeTab} 
+        onValueChange={(value) => {
+            setActiveTab(value);
+            if (value === "bookmarks") {
+                refetchBookmarks();
+            }
+        }
+        }>
             <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="search" className="flex items-center gap-2">
                     <Search className="h-4 w-4">
@@ -249,7 +254,7 @@ return (
                         ) : (
                             <div className="flex space-x-2">
                                 <IngredientFilter
-                                    inventory={ inventory }
+                                    inventory={ ingredientData }
                                     selected={ selectedIngredients }
                                     onChange={ setSelectedIngredients }
                                     onFetchIngredients={ refetch }
@@ -305,7 +310,18 @@ return (
                 </div>
             </TabsContent>
             <TabsContent value="bookmarks">
-                <BookmarkedRecipes recipes={bookmarkedRecipes} onRemoveBookmark={handleRemoveBookmark} />
+                <BookmarkedRecipes 
+                recipes={bookmarkedRecipes} 
+                onRemoveBookmark={handleRemoveBookmark} 
+                onRecipeClick={handleRecipeClick}
+                />
+                <RecipeDetail 
+                recipeId={ selectedRecipeId }
+                open={ !!selectedRecipeId }
+                onOpenChange={ (open) => {
+                if (!open) setSelectedRecipeId(null)
+                } }
+                />
             </TabsContent>
         </Tabs>
     </div>
