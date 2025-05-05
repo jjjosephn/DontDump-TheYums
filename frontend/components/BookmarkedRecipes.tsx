@@ -3,10 +3,10 @@ import RecipeCard from "@/components/RecipeCard"
 
 // This matches your actual database schema
 interface SavedRecipe {
-  savedRecipeId: string
+  id: string
   userId: string
-  recipeName: string
-  recipePicture: string
+  title: string
+  imageUrl: string
 }
 
 interface BookmarkedRecipesProps {
@@ -24,12 +24,13 @@ export default function BookmarkedRecipes({
   onRemoveBookmark,
   onRecipeClick,
 }: BookmarkedRecipesProps) {
+  // recipes is an array of SavedRecipe objects sry
   // Convert SavedRecipe to the format expected by RecipeCard
   const mapToRecipeFormat = (savedRecipe: SavedRecipe) => {
     return {
-      id: savedRecipe.savedRecipeId,
-      title: savedRecipe.recipeName,
-      imageUrl: savedRecipe.recipePicture,
+      id: savedRecipe.id,
+      title: savedRecipe.title,
+      imageUrl: savedRecipe.imageUrl,
       ingredients: [], // Your schema doesn't have ingredients, so use empty array
     }
   }

@@ -15,10 +15,11 @@ import Image from "next/image"
 import { format } from "date-fns"
 
 interface Ingredient {
+    ingredientId: string
     userId: string
-    name: string
-    imageUrl: string
-    expirationDate: Date
+    ingredientName: string
+    ingredientPicture: string
+    ingredientDateExpired: Date
 }
 
 interface IngredientFilterProps {
@@ -28,7 +29,7 @@ interface IngredientFilterProps {
     onFetchIngredients: () => void
 }
 
-export default function Ingredientfilter({
+export default function IngredientFilter({
     inventory, 
     selected = [], 
     onChange,
@@ -78,26 +79,26 @@ export default function Ingredientfilter({
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                       {inventory.map((ingredient) => (
                         <div
-                          key={ingredient.name}
+                          key={ingredient.ingredientId}
                           className={`p-2 rounded-md cursor-pointer border transition-all ${
-                            selected.includes(ingredient.name)
+                            selected.includes(ingredient.ingredientName)
                               ? "border-primary bg-primary/5 shadow-sm"
                               : "border-secondary hover:border-primary/50"
                           }`}
-                          onClick={() => handleToggle(ingredient.name)}
+                          onClick={() => handleToggle(ingredient.ingredientName)}
                         >
                           <div className="aspect-square relative mb-2">
                             <Image
-                              src={ingredient.imageUrl || "/FoodImageNotFound.png"}
-                              alt={ingredient.name}
+                              src={ingredient.ingredientPicture || "/FoodImageNotFound.png"}
+                              alt={ingredient.ingredientName}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               className="rounded-md object-cover"
                             />
                           </div>
-                          <h3 className="font-semibold">{ingredient.name}</h3>
+                          <h3 className="font-semibold">{ingredient.ingredientName}</h3>
                           <p className="text-sm text-muted-foreground">
-                            Expires: {format(ingredient.expirationDate, "MM/dd/yyyy")}
+                            Expires: {format(ingredient.ingredientDateExpired, "MM/dd/yyyy")}
                           </p>
                         </div>
                       ))}
