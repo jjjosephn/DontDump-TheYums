@@ -184,14 +184,17 @@ export const unbookmarkRecipe = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { recipeId } = req.params
+  const { userId, recipeId} = req.params
 
   try {
     console.log("controller called:", recipeId)
      const unbookmarkedRecipe = await prisma.savedRecipe.delete({
-        where: { 
-          savedRecipeId: recipeId
-        },
+      where: {
+        userId_savedRecipeId: {
+          userId,
+          savedRecipeId: recipeId,
+        }
+      }
      })
      res.status(200).json(unbookmarkedRecipe)
   } catch (error) {

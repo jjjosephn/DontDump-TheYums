@@ -38,8 +38,8 @@ export const api = createApi({
       }),
 
       unbookmarkRecipe: build.mutation({
-        query: (recipeId) => ({
-          url: `/recipes/unbookmark/${recipeId}`,
+        query: ({userId, recipeId}) => ({
+          url: `/recipes/unbookmark/${userId}/${recipeId}`,
           method: 'DELETE',
         }),
       }),

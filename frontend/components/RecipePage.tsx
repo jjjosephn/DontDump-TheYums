@@ -171,7 +171,10 @@ export default function RecipePage() {
         console.log("handleRemoveBookmark called")
         try {
             console.log("handle remove bookmark", recipeId);
-            await unbookmarkRecipe(recipeId)
+            await unbookmarkRecipe({
+                userId: user?.id,
+                recipeId: recipeId
+            }).unwrap();
             await refetchBookmarks()
         } catch (err) {
             console.error('Unbookmark failed:', err);

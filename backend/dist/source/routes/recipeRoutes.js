@@ -8,7 +8,7 @@ router.get('/byIng', recipeController_1.getRecipesByIngredients);
 router.get('/complex', recipeController_1.getRecipeByComplex);
 router.get('/getIng/:userid', ingredientsController_1.getAllIngredients);
 router.post('/bookmark', recipeController_1.bookmarkRecipe);
-router.delete('/unbookmark/:recipeId', recipeController_1.unbookmarkRecipe);
+router.delete('/unbookmark/:userId/:recipeId', recipeController_1.unbookmarkRecipe);
 router.get('/bookmarks/:userId', recipeController_1.getAllRecipes);
 router.get('/:id', recipeController_1.getRecipeDetail);
 exports.default = router;
