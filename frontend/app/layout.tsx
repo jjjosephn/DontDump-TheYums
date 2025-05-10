@@ -4,6 +4,7 @@ import "./globals.css";
 import StoreProvider from "./redux";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ClerkProvider } from "@clerk/nextjs"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,13 +29,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`
+          ${geistSans.variable} ${geistMono.variable} antialiased 
+          bg-gradient-to-b from-amber-50 to-amber-100`}
       >
-        <StoreProvider>
-          <Navbar />
-            {children}
-          <Footer />
-        </StoreProvider>
+        <ClerkProvider>
+          <StoreProvider>
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </StoreProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

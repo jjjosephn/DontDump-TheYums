@@ -16,18 +16,22 @@ datasource db {
 model User {
   userId    String   @id @default(uuid())
   timestamp DateTime @default(now())
+
+  Ingredient Ingredient[]
+  
 }
 
-// Edit Later
 model Ingredient {
   ingredientId          String   @id @default(uuid())
+  userId                String 
   ingredientName        String
   ingredientPicture     String
   ingredientDateAdded   DateTime @default(now())
   ingredientDateExpired DateTime
+
+  User User @relation(fields: [userId], references: [userId])
 }
 
-// Edit Later
 model Food {
   foodId          String   @id @default(uuid())
   foodName        String
@@ -36,8 +40,11 @@ model Food {
   foodDateExpired DateTime
 }
 
-// Edit Later
 model SavedRecipe {
-  recipeId          String   @id @default(uuid())
-  recipeName        String 
+  userId        String
+  savedRecipeId String
+  recipeName    String
+  recipePicture String
+
+  @@id([userId, savedRecipeId]) // Composite primary key
 }
