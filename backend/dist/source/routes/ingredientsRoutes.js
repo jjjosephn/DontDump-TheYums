@@ -7,4 +7,5 @@ router.get('/info', ingredientsController_1.fetchIngredients);
 router.post('/add', ingredientsController_1.addIngredient);
 router.get('/:userId', ingredientsController_1.getAllIngredients);
 router.delete('/delete/:id', ingredientsController_1.deleteIngredient);
+router.get('/tip/fetch', ingredientsController_1.fetchDisposalTip);
 exports.default = router;
