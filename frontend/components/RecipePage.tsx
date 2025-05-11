@@ -162,6 +162,7 @@ export default function RecipePage() {
             name: recipe.title,
             image: recipe.imageUrl,
           }).unwrap();
+          refetchBookmarks();
         } catch (err) {
           console.error('Bookmark failed:', err);
         }
