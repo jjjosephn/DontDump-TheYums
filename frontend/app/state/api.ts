@@ -6,11 +6,56 @@ export const api = createApi({
    tagTypes: [],
    endpoints: (build) => ({
       // Recipes
-      searchRecipes: build.mutation({
+      complexRecipeSearch: build.query({
+        query: ({ terms, number }) => ({
+          url: '/recipes/complex', // backend endpoint
+          method: 'GET',
+          params: { terms, number }, // params
+        }),
+      }),
+
+      ingredientRecipeSearch: build.query({
         query: ({ ingredients, number }) => ({
-          url: '/api/recipes', // backend endpoint
+          url: '/recipes/byIng', // backend endpoint
           method: 'GET',
           params: { ingredients, number }, // params
+        }),
+      }),
+
+      getIngredientsFilter: build.query({
+        query: (userId) => ({
+          url: `/recipes/getIng/${userId}`,
+          method: 'GET',
+        }),
+      }),
+
+      bookmarkRecipe: build.mutation({
+        query: (recipe) => ({
+          url: '/recipes/bookmark',
+          method: 'POST',
+          body: recipe,
+        }),
+      }),
+
+      unbookmarkRecipe: build.mutation({
+        query: ({userId, recipeId}) => ({
+          url: `/recipes/unbookmark/${userId}/${recipeId}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      getAllRecipes: build.query({
+        query: (userId) => ({
+          url: `/recipes/bookmarks/${userId}`, // backend endpoint
+          method: 'GET',
+          params: { userId }, // params
+        }),
+      }),
+
+      getRecipeDetail: build.query({
+        query: (id) => ({
+          url: `/recipes/${id}`, // backend endpoint
+          method: 'GET',
         }),
       }),
 
@@ -54,7 +99,13 @@ export const api = createApi({
 });
 
 export const { 
-  useSearchRecipesMutation,
+  useComplexRecipeSearchQuery,
+  useIngredientRecipeSearchQuery,
+  useGetIngredientsFilterQuery,
+  useBookmarkRecipeMutation,
+  useUnbookmarkRecipeMutation,
+  useGetAllRecipesQuery,
+  useGetRecipeDetailQuery,
   useFetchIngredientsQuery,
   useAddIngredientMutation,
   useGetAllIngredientsQuery,

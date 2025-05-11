@@ -41,6 +41,10 @@ model Food {
 }
 
 model SavedRecipe {
-  recipeId   String @id @default(uuid())
-  recipeName String
+  userId        String
+  savedRecipeId String
+  recipeName    String
+  recipePicture String
+
+  @@id([userId, savedRecipeId]) // Composite primary key
 }

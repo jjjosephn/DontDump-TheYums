@@ -24,7 +24,7 @@ app.use(cors())
 
 /* Routes */
 app.use('/example', exampleRoutes); // Handles /example
-app.use('/api/recipes', recipeRoutes);  // Handles /recipes
+app.use('/recipes', recipeRoutes);  // Handles /recipes
 app.use('/ingredients', ingredientRoutes); // Handles /ingredients
 app.use('/user', userRoutes); // Handles /user
 

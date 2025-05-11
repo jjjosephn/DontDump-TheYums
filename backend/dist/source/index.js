@@ -26,7 +26,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
 /* Routes */
 app.use('/example', exampleRoutes_1.default); // Handles /example
-app.use('/api/recipes', recipeRoutes_1.default); // Handles /recipes
+app.use('/recipes', recipeRoutes_1.default); // Handles /recipes
 app.use('/ingredients', ingredientsRoutes_1.default); // Handles /ingredients
 app.use('/user', userRoutes_1.default); // Handles /user
 /* Server */
