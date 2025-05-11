@@ -111,7 +111,7 @@ export function RecipeDetail({ open, onOpenChange, recipeId }: RecipeDetailProps
               {recipe.extendedIngredients && recipe.extendedIngredients.length > 0 ? (
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {recipe.extendedIngredients.map((ing) => (
-                    <li key={ing.id || ing.name} className="flex items-center gap-3">
+                    <li key={ing.id} className="flex items-center gap-3">
                       {ing.image && (
                         <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-muted">
                           <img
