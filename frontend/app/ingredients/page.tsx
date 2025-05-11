@@ -43,6 +43,7 @@ export default function IngredientInventory() {
   const [add] = useAddIngredientMutation()
   const [deleteIngredient] = useDeleteIngredientMutation()
   const [disposalDialogOpen, setDisposalDialogOpen] = useState(false)
+  const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null)
 
   const filteredIngredients = useMemo(() => {
     return ingredients
@@ -92,7 +93,8 @@ export default function IngredientInventory() {
     }
   }, [add, refetch])
 
-  const handleRemoveIngredient = () => {
+  const handleRemoveIngredient = (ingredient: Ingredient) => {
+    setSelectedIngredient(ingredient);
     setDisposalDialogOpen(true)
   }
   
@@ -103,6 +105,7 @@ export default function IngredientInventory() {
     } catch (error) {
       console.error("Failed to delete ingredient:", error)
     }
+    setDisposalDialogOpen(false)
   }, [deleteIngredient, refetch])
 
   const renderExpiryBadge = (days: number) => {
@@ -266,7 +269,7 @@ export default function IngredientInventory() {
                                   variant="outline" 
                                   size="icon" 
                                   className="h-7 w-7 rounded-full bg-white/80 hover:bg-white shadow-sm"
-                                  onClick={handleRemoveIngredient}
+                                  onClick={() => handleRemoveIngredient(ingredient)}
                                 >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -284,7 +287,7 @@ export default function IngredientInventory() {
                                 </DialogDescription>
                               </DialogHeader>
 
-                              {ingredient && <DisposalTips ingredient={ingredient} />}
+                              {selectedIngredient && <DisposalTips ingredient={selectedIngredient} />}
 
                               <div className="flex justify-end gap-2 mt-4">
                                 <Button variant="outline" onClick={() => setDisposalDialogOpen(false)}>
