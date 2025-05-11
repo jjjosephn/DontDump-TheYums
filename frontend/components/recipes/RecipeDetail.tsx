@@ -1,6 +1,6 @@
 "use client"
 
-import { useGetRecipeDetailQuery } from "../app/state/api"
+import { useGetRecipeDetailQuery } from "../../app/state/api"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"

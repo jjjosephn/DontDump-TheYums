@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/recipes/RecipeCard";
 
 // For the recipes from the API
 interface Recipe {
