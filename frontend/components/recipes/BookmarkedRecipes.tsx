@@ -1,5 +1,5 @@
 "use client"
-import RecipeCard from "@/components/RecipeCard"
+import RecipeCard from "@/components/recipes/RecipeCard"
 
 // This matches your actual database schema
 interface SavedRecipe {

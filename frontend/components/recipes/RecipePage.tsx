@@ -19,25 +19,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label" //
 
 // custom ui components
-import IngredientFilter from "@/components/IngredientFilter"
-import RecipeResults from "@/components/RecipeResults"
-import BookmarkedRecipes from "@/components/BookmarkedRecipes"
-import { RecipeDetail } from "@/components/RecipeDetail"
+import IngredientFilter from "@/components/recipes/IngredientFilter"
+import RecipeResults from "@/components/recipes/RecipeResults"
+import BookmarkedRecipes from "@/components/recipes/BookmarkedRecipes"
+import { RecipeDetail } from "@/components/recipes/RecipeDetail"
 
 // icons
 import { Search, Bookmark } from "lucide-react"
 import { ChefHat } from "lucide-react"
 
 // hooks for calling api
-import { useComplexRecipeSearchQuery } from "../app/state/api"
-import { useIngredientRecipeSearchQuery } from "../app/state/api"
-import { useGetIngredientsFilterQuery } from "../app/state/api"
+import { useComplexRecipeSearchQuery } from "../../app/state/api"
+import { useIngredientRecipeSearchQuery } from "../../app/state/api"
+import { useGetIngredientsFilterQuery } from "../../app/state/api"
 
-import { useGetRecipeDetailQuery } from "../app/state/api" // this is called in the RecipeDetail component
+import { useGetRecipeDetailQuery } from "../../app/state/api" // this is called in the RecipeDetail component
 
-import { useBookmarkRecipeMutation } from "../app/state/api"
-import { useUnbookmarkRecipeMutation } from "../app/state/api"
-import { useGetAllRecipesQuery } from "../app/state/api"
+import { useBookmarkRecipeMutation } from "../../app/state/api"
+import { useUnbookmarkRecipeMutation } from "../../app/state/api"
+import { useGetAllRecipesQuery } from "../../app/state/api"
 import { set } from "date-fns"
 
 // typing (review later)
