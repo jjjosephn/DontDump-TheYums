@@ -86,6 +86,7 @@ export const api = createApi({
           method: 'DELETE',
         }),
       }),
+
       fetchDisposalTip: build.query({
         query: (name) => ({
           url: '/ingredients/tip/fetch',
