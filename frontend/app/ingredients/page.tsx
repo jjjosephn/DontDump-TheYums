@@ -100,6 +100,7 @@ export default function IngredientInventory() {
   
   const confirmRemove = useCallback(async (id: string) => {
     try {
+      console.log(id)
       await deleteIngredient(id)
       await refetch()
     } catch (error) {
@@ -281,7 +282,7 @@ export default function IngredientInventory() {
                           <Dialog open={disposalDialogOpen} onOpenChange={setDisposalDialogOpen}>
                             <DialogContent className="sm:max-w-md">
                               <DialogHeader>
-                                <DialogTitle>Remove {ingredient?.ingredientName}</DialogTitle>
+                                <DialogTitle>Remove {selectedIngredient?.ingredientName}</DialogTitle>
                                 <DialogDescription>
                                   Removing this ingredient will delete it from your inventory. Are you sure you want to proceed?
                                 </DialogDescription>
@@ -293,7 +294,7 @@ export default function IngredientInventory() {
                                 <Button variant="outline" onClick={() => setDisposalDialogOpen(false)}>
                                   Cancel
                                 </Button>
-                                <Button onClick={() => confirmRemove(ingredient.ingredientId)}>Remove Ingredient</Button>
+                                <Button onClick={() => confirmRemove(selectedIngredient?.ingredientId ?? "")}>Remove Ingredient</Button>
                               </div>
                             </DialogContent>
                           </Dialog>
