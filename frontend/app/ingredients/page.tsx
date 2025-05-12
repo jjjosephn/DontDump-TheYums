@@ -280,7 +280,7 @@ export default function IngredientInventory() {
                           </div>
 
                           <Dialog open={disposalDialogOpen} onOpenChange={setDisposalDialogOpen}>
-                            <DialogContent className="sm:max-w-md">
+                            <DialogContent className="sm:max-w-md bg-[var(--tips-dialog-bg)]">
                               <DialogHeader>
                                 <DialogTitle>Remove {selectedIngredient?.ingredientName}</DialogTitle>
                                 <DialogDescription>
@@ -291,7 +291,7 @@ export default function IngredientInventory() {
                               {selectedIngredient && <DisposalTips ingredient={selectedIngredient} />}
 
                               <div className="flex justify-end gap-2 mt-4">
-                                <Button variant="outline" onClick={() => setDisposalDialogOpen(false)}>
+                                <Button className="bg-[var(--tips-dialog-button-bg)]" variant="outline" onClick={() => setDisposalDialogOpen(false)}>
                                   Cancel
                                 </Button>
                                 <Button onClick={() => confirmRemove(selectedIngredient?.ingredientId ?? "")}>Remove Ingredient</Button>

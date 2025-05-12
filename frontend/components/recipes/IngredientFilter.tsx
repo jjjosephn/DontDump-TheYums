@@ -66,7 +66,7 @@ export default function IngredientFilter({
                   {selected.length > 0 ? `${selected.length} selected` : "Filter"}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="w-[80vw] max-w-[800px] bg-[var(--filter-dialog-bg)]">
+              <DialogContent className="w-[80vw] max-w-[800px] bg-[var(--filter-button-bg)]">
                 <DialogHeader>
                   <DialogTitle>Select Ingredients from Your Inventory</DialogTitle>
                 </DialogHeader>

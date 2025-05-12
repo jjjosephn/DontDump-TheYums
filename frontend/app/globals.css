@@ -84,6 +84,8 @@
   --map-button-bg: oklch(0.99 0.03 100);
   --filter-button-bg: oklch(0.99 0.03 100);
   --filter-dialog-bg: oklch(0.99 0.03 100);
+  --tips-dialog-bg: oklch(0.99 0.03 100);
+  --tips-dialog-button-bg: oklch(0.95 0.03 100);
 }
 
 [data-state="active"].tab-trigger {
