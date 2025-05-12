@@ -199,13 +199,13 @@ return (
             }
         }
         }>
-            <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="search" className="flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-2 bg-[var(--tablist-bg)]">
+                <TabsTrigger value="search" className="tab-trigger flex items-center gap-2">
                     <Search className="h-4 w-4">
                         Search Recipes
                     </Search>
                 </TabsTrigger>
-                <TabsTrigger value="bookmarks" className="flex items-center gap-2">
+                <TabsTrigger value="bookmarks" className="tab-trigger flex items-center gap-2">
                     <Bookmark className="h-4 w-4">
                         Bookmarked Recipes
                     </Bookmark>
