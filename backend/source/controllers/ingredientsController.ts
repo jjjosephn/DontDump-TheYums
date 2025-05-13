@@ -62,11 +62,6 @@ export const getAllIngredients = async (
          }
       })
 
-      if (!ingredients || ingredients.length === 0) {
-         res.status(404).json({ message: 'No ingredients found for this user.' })
-         return
-      }
-      
       res.status(200).json(ingredients)
    } catch (error) {
       console.error('Error fetching all ingredients:', error);

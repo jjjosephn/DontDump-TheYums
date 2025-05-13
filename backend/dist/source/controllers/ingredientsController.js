@@ -58,10 +58,6 @@ const getAllIngredients = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 userId
             }
         });
-        if (!ingredients || ingredients.length === 0) {
-            res.status(404).json({ message: 'No ingredients found for this user.' });
-            return;
-        }
         res.status(200).json(ingredients);
     }
     catch (error) {
