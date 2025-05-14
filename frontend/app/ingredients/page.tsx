@@ -17,6 +17,7 @@ import { useAddIngredientMutation, useGetAllIngredientsQuery, useDeleteIngredien
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useUser } from "@clerk/nextjs"
+import DisposalTips from "@/components/ingredients/DisposalTips"
 
 interface Ingredient {
   ingredientId: string;
@@ -41,6 +42,8 @@ export default function IngredientInventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [add] = useAddIngredientMutation()
   const [deleteIngredient] = useDeleteIngredientMutation()
+  const [disposalDialogOpen, setDisposalDialogOpen] = useState(false)
+  const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null)
 
   const filteredIngredients = useMemo(() => {
     return ingredients
@@ -90,13 +93,20 @@ export default function IngredientInventory() {
     }
   }, [add, refetch])
 
-  const handleDeleteIngredient = useCallback(async (id: string) => {
+  const handleRemoveIngredient = (ingredient: Ingredient) => {
+    setSelectedIngredient(ingredient);
+    setDisposalDialogOpen(true)
+  }
+  
+  const confirmRemove = useCallback(async (id: string) => {
     try {
+      console.log(id)
       await deleteIngredient(id)
       await refetch()
     } catch (error) {
       console.error("Failed to delete ingredient:", error)
     }
+    setDisposalDialogOpen(false)
   }, [deleteIngredient, refetch])
 
   const renderExpiryBadge = (days: number) => {
@@ -260,7 +270,7 @@ export default function IngredientInventory() {
                                   variant="outline" 
                                   size="icon" 
                                   className="h-7 w-7 rounded-full bg-white/80 hover:bg-white shadow-sm"
-                                  onClick={() => handleDeleteIngredient(ingredient.ingredientId)}
+                                  onClick={() => handleRemoveIngredient(ingredient)}
                                 >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -268,8 +278,29 @@ export default function IngredientInventory() {
                               <TooltipContent>Delete</TooltipContent>
                             </Tooltip>
                           </div>
+
+                          <Dialog open={disposalDialogOpen} onOpenChange={setDisposalDialogOpen}>
+                            <DialogContent className="sm:max-w-md bg-[var(--tips-dialog-bg)]">
+                              <DialogHeader>
+                                <DialogTitle>Remove {selectedIngredient?.ingredientName}</DialogTitle>
+                                <DialogDescription>
+                                  Removing this ingredient will delete it from your inventory. Are you sure you want to proceed?
+                                </DialogDescription>
+                              </DialogHeader>
+
+                              {selectedIngredient && <DisposalTips ingredient={selectedIngredient} />}
+
+                              <div className="flex justify-end gap-2 mt-4">
+                                <Button className="bg-[var(--tips-dialog-button-bg)]" variant="outline" onClick={() => setDisposalDialogOpen(false)}>
+                                  Cancel
+                                </Button>
+                                <Button onClick={() => confirmRemove(selectedIngredient?.ingredientId ?? "")}>Remove Ingredient</Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </CardContent>
+                      
                       
                       <CardFooter className="flex flex-col items-start p-3 pt-0 text-xs">
                         <div className="grid grid-cols-2 gap-x-2 gap-y-1 w-full">

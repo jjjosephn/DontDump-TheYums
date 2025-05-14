@@ -60,13 +60,13 @@ export default function IngredientFilter({
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline"
-                  className="w-[150px] justify-start bg-[var(--filter-button-bg)]"
+                  className="w-[150px] justify-start"
                   onClick={ handleOpen }>
                   <Filter className="mr-2 h-4 w-4" />
                   {selected.length > 0 ? `${selected.length} selected` : "Filter"}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="w-[80vw] max-w-[800px] bg-[var(--filter-button-bg)]">
+              <DialogContent className="w-[80vw] max-w-[800px]">
                 <DialogHeader>
                   <DialogTitle>Select Ingredients from Your Inventory</DialogTitle>
                 </DialogHeader>

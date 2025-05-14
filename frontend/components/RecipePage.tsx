@@ -19,25 +19,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label" //
 
 // custom ui components
-import IngredientFilter from "@/components/recipes/IngredientFilter"
-import RecipeResults from "@/components/recipes/RecipeResults"
-import BookmarkedRecipes from "@/components/recipes/BookmarkedRecipes"
-import { RecipeDetail } from "@/components/recipes/RecipeDetail"
+import IngredientFilter from "@/components/IngredientFilter"
+import RecipeResults from "@/components/RecipeResults"
+import BookmarkedRecipes from "@/components/BookmarkedRecipes"
+import { RecipeDetail } from "@/components/RecipeDetail"
 
 // icons
 import { Search, Bookmark } from "lucide-react"
 import { ChefHat } from "lucide-react"
 
 // hooks for calling api
-import { useComplexRecipeSearchQuery } from "../../app/state/api"
-import { useIngredientRecipeSearchQuery } from "../../app/state/api"
-import { useGetIngredientsFilterQuery } from "../../app/state/api"
+import { useComplexRecipeSearchQuery } from "../app/state/api"
+import { useIngredientRecipeSearchQuery } from "../app/state/api"
+import { useGetIngredientsFilterQuery } from "../app/state/api"
 
-import { useGetRecipeDetailQuery } from "../../app/state/api" // this is called in the RecipeDetail component
+import { useGetRecipeDetailQuery } from "../app/state/api" // this is called in the RecipeDetail component
 
-import { useBookmarkRecipeMutation } from "../../app/state/api"
-import { useUnbookmarkRecipeMutation } from "../../app/state/api"
-import { useGetAllRecipesQuery } from "../../app/state/api"
+import { useBookmarkRecipeMutation } from "../app/state/api"
+import { useUnbookmarkRecipeMutation } from "../app/state/api"
+import { useGetAllRecipesQuery } from "../app/state/api"
 import { set } from "date-fns"
 
 // typing (review later)
@@ -199,13 +199,13 @@ return (
             }
         }
         }>
-            <TabsList className="grid w-full grid-cols-2 bg-[var(--tablist-bg)]">
-                <TabsTrigger value="search" className="tab-trigger flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="search" className="flex items-center gap-2">
                     <Search className="h-4 w-4">
                         Search Recipes
                     </Search>
                 </TabsTrigger>
-                <TabsTrigger value="bookmarks" className="tab-trigger flex items-center gap-2">
+                <TabsTrigger value="bookmarks" className="flex items-center gap-2">
                     <Bookmark className="h-4 w-4">
                         Bookmarked Recipes
                     </Bookmark>

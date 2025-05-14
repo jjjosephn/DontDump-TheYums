@@ -87,6 +87,14 @@ export const api = createApi({
         }),
       }),
 
+      fetchDisposalTip: build.query({
+        query: (name) => ({
+          url: '/ingredients/tip/fetch',
+          method: 'GET',
+          params: { name }
+        }),
+      }),
+
       // User
       checkUser: build.mutation<any, {userId: string}>({
         query: (body) => ({
@@ -110,5 +118,6 @@ export const {
   useAddIngredientMutation,
   useGetAllIngredientsQuery,
   useDeleteIngredientMutation,
+  useFetchDisposalTipQuery,
   useCheckUserMutation,
 } = api;
